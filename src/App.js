@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Login from './Pages/LoginPage';
-import Dashboard from './Pages/dashboard'
+import Dashboard from './Pages/Dashboard'
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
