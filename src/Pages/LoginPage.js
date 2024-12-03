@@ -1,47 +1,70 @@
-import React, {useState} from "react";
+import React, {Fragment, useState} from "react";
 import axios from "axios";
+import 'bootstrap/dist/css/bootstrap.css';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
 
+const Login = () =>
+{
+    const [token, setToken] = useState("");
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
-const Login = ({setToken}) =>{
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-
-        try{
-            const response = await axios.post("https://localhost:7297/api/Auth/Login", 
-                {
-                    username, password,
-                });
-            setToken(response.data)
-            setError("no error");
+    const handleLogin = (event) =>
+    {
+        event.preventDefault();
+        const url = 'https://localhost:7297/api/Auth/Login'
+        const data = {
+            "username": username,
+            "password": password
         }
-        catch{
-            console.log(error)
-            setError("Invalid username or passwordx");
-        }
+
+        axios.post(url, data)
+        .then((result) =>
+        {setToken(result.data);
+            console.log("Token received:", result.data);
+            showRecipes()
+        })
+        .catch((error) =>
+        {console.log(error);})
+    }
+
+    const showRecipes = () => {
+        axios.get('https://localhost:7297/api/Recipes/GetAll', {
+            headers: {
+                Authorization: `Bearer ${token}`, 
+            },
+        })
+        .then((result) => {
+            console.log(result.data); //just to double check
+        })
+        .catch((error) => {
+            console.error("Error fetching recipes:", error);
+        });
     };
 
     return(
-        <div>
-            <h1 className="display-2">Login</h1>
-
-            <form onSubmit={handleLogin}>
+        <Fragment>
+            <Container className="mt-3">
                 <div>
-                    <label className="form-label">Username:</label>
-                    <input className="form-control" type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                    <h2 className="display-2 text-center">Login</h2>
+                    <form>
+                        <div className="mt-3">
+                            <label>Username:</label>
+                            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                        </div>
+                        <div className="mt-3">
+                            <label>Password:</label>
+                            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                        </div>
+                        <button className="btn btn-primary" onClick={handleLogin}>Login</button>
+                    </form>
                 </div>
-                <div>
-                    <label className="form-label">Password:</label>
-                    <input className="form-control" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                </div>
-                <button type="submit">Login</button>
-            </form>
-            {error && <p style={{color:"red"}}>{error}</p>}
-        </div>
+            </Container>
+        </Fragment>
     );
 }
+
+
 
 export default Login;
