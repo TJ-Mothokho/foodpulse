@@ -3,12 +3,14 @@ import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
+import { useNavigate } from "react-router-dom";
 
 const Login = () =>
 {
     const [token, setToken] = useState("");
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = (event) =>
     {
@@ -23,7 +25,8 @@ const Login = () =>
         .then((result) =>
         {setToken(result.data);
             console.log("Token received:", result.data);
-            showRecipes()
+            //redirect to new page
+            navigate('/dashboard');
         })
         .catch((error) =>
         {console.log(error);})
