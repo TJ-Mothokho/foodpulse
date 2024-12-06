@@ -8,15 +8,19 @@ function CustomTable({ headers, data, actions }) {
       {/* Table headers */}
       <thead>
         <tr>
+
           {headers.map((header, index) => (
             <th key={index}>{header}</th>
           ))}
+
           {actions && <th>Actions</th>}
         </tr>
+
       </thead>
 
       {/* Table rows */}
       <tbody>
+
         {data.map((row, index) => (
           <tr key={index}>
             {headers.map((header, idx) => (
@@ -26,6 +30,7 @@ function CustomTable({ headers, data, actions }) {
             {actions && <td>{actions(row)}</td>}
           </tr>
         ))}
+        
       </tbody>
     </Table>
   );
