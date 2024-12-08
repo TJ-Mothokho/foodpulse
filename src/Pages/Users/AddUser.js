@@ -8,7 +8,7 @@ const AddUser = () =>
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
-    const [dateOfBirth, setDateOfBirth] = useState(Date.UTC(2000,0,1));
+    const [dateOfBirth, setDateOfBirth] = useState('');
     const [website, setWebsite] = useState("");
     const [bio, setBio] = useState("");
     const [profilePicture, setProfilePicture] = useState("");
@@ -26,8 +26,9 @@ const AddUser = () =>
     const handleSave = () =>
     {
         axios.post('https://localhost:7297/api/Users/Add', data)
-        .then((result) => alert(result.data))
-        .catch((error) => alert(error))
+        .then((result) => toast.success(result.data))
+        .catch((error) => toast.error(error))
+        console.log(data.dateOfBirth);
     }
 
     return(

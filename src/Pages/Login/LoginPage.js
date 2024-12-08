@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from "react-router-dom";
+import image from './Assets/Images/login.png'
 
 const Login = () =>
 {
@@ -81,7 +82,7 @@ const Login = () =>
                         </div>
                     </div>
                     <div className="col-5">
-                    <img src="./Assets/Images/login.png" class="img-fluid image-right" alt="imageHere" />
+                    <img src={image} class="img-fluid image-right" alt="imageHere" />
                     </div>
                 </div>
             </Container>
