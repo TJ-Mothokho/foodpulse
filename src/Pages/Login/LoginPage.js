@@ -1,4 +1,5 @@
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useState, useContext} from "react";
+import { TokenContext } from "../../TokenContext";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
@@ -8,7 +9,7 @@ import image from './Assets/Images/login.png'
 
 const Login = () =>
 {
-    const [token, setToken] = useState("");
+    const {setToken} = useContext(TokenContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ const Login = () =>
     const showRecipes = () => {
         axios.get('https://localhost:7297/api/Recipes/GetAll', {
             headers: {
-                Authorization: `Bearer ${token}`, 
+                Authorization: `Bearer ${setToken}`, 
             },
         })
         .then((result) => {
