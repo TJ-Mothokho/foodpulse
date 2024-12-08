@@ -7,6 +7,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AddUser from './Pages/Users/AddUser';
 import AppNavbar from './Components/Navbar';
+import UsersList from './Pages/Users/UsersList';
 
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
         <Route path="/" element={<Login />} /> {/* Login page */}
         <Route path="/dashboard" element={<Dashboard />} /> {/* Dashboard page */}
         <Route path="/AddRecipe" Component={AddRecipe} />
-        <Route path="/Add/User" Component={AddUser} />
+        <Route path="/User/Add" Component={AddUser} />
+        <Route path="/Users" Component={UsersList} />
     </Routes>
 </Router>
   );

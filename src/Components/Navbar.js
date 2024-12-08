@@ -12,7 +12,8 @@ function AppNavbar() {
           <Nav className="me-auto">
             <Nav.Link href="/Recipes">Recipes</Nav.Link>
             <Nav.Link href="/Categories">Category</Nav.Link>
-            <Nav.Link href="/Add/User">User</Nav.Link>
+            <Nav.Link href="/User/Add">User</Nav.Link>
+            <Nav.Link href="/Users">View Users</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
