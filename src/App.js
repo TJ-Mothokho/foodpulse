@@ -17,10 +17,10 @@ function App() {
       <AppNavbar/>
     <Routes>
         {/* Define routes */}
-        <Route path="/" element={<Login />} /> {/* Login page */}
+        <Route path="/Login" element={<Login />} /> {/* Login page */}
         <Route path="/dashboard" element={<Dashboard />} /> {/* Dashboard page */}
         <Route path="/AddRecipe" Component={AddRecipe} />
-        <Route path="/User/Add" Component={AddUser} />
+        <Route path="/Register" Component={AddUser} />
         <Route path="/Users" Component={UsersList} />
         <Route path="/User/:userID" Component={UserDetails} />
     </Routes>
