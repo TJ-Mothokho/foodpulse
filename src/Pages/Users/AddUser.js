@@ -53,7 +53,7 @@ const AddUser = () =>
 
                     <Col>
                         <label className="form-label">Date Of Birth:</label>
-                        <input className="form-control" type="number" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
+                        <input className="form-control" type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
                     </Col>
                 </Row>
 

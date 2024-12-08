@@ -24,6 +24,7 @@ function App() {
         <Route path="/Users" Component={UsersList} />
         <Route path="/User/:userID" Component={UserDetails} />
     </Routes>
+    
 </Router>
   );
 }

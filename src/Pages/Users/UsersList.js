@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Login from "../Login/LoginPage";
 
 const UsersList = () =>
 {
@@ -17,7 +18,11 @@ const UsersList = () =>
     
     const getUsers = () =>
     {
-        axios.get('https://localhost:7297/api/Users/GetAll')
+        axios.get('https://localhost:7297/api/Users/GetAll',{
+            headers:{
+                // Authorization: `Bearer ${}`
+            }
+        })
         .then((result) =>{
             setData(result.data);
         })
