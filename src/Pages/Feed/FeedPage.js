@@ -1,7 +1,6 @@
+import axios from "axios";
 import React, { useState, useEffect, Fragment } from "react";
-import apiClient from '../../api/axiosConfig';
-import CustomTable from '../../components/Table';
-import { Button } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
 const Feed = () =>
@@ -10,7 +9,7 @@ const Feed = () =>
 
   // Fetch recipes from the API
   const fetchRecipes = () => {
-    apiClient
+    axios
       .get('/Recipes/GetAll')
       .then((response) => {
         setRecipes(response.data);
@@ -27,7 +26,7 @@ const Feed = () =>
 
   // Handle delete action
   const handleDelete = (id) => {
-    apiClient
+    axios
       .delete(`/Recipes/Delete/${id}`)
       .then(() => {
         toast.success('Recipe deleted');
@@ -44,24 +43,21 @@ const Feed = () =>
       <Button variant="primary" href="/users/add">
         Add Recipe
       </Button>
-      <CustomTable
-        headers={['RecipeID', 'Title', 'UserName', 'ProfilePicture']}
-        data={recipes}
-        actions={(row) => (
-          <>
-            <Button variant="info" className="mx-1">
-              Edit
-            </Button>
-            <Button
-              variant="danger"
-              className="mx-1"
-              onClick={() => handleDelete(row.ID)}
-            >
-              Delete
-            </Button>
-          </>
-        )}
-      />
+      
+      <Card style={{width:'auto'}} className="mt-5">
+        <Card.Body>
+          <Card.Title>Card Title</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
+          <Card.Text>
+            wsedrctfvybguhnijmewrdytfghuijm
+            exdrcftvgybhunjimkexrdctfvygbhunijm
+            sxrdctfvgybhunijmdcrftvgybhunjmk
+            drcftvgbhnjcrftvgybhunjimk
+          </Card.Text>
+          <Card.Link href="#"><i class="bi bi-star"></i></Card.Link>
+          <Card.Link href="#">Card Link</Card.Link>
+        </Card.Body>
+      </Card>
     </div>
   );
 }

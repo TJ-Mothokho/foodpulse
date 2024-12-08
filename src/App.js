@@ -9,6 +9,7 @@ import AddUser from './Pages/Users/AddUser';
 import AppNavbar from './Components/Navbar';
 import UsersList from './Pages/Users/UsersList';
 import UserDetails from './Pages/Users/UserDetails';
+import Feed from './Pages/Feed/FeedPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/Login" element={<Login />} /> {/* Login page */}
         <Route path="/dashboard" element={<Dashboard />} /> {/* Dashboard page */}
         <Route path="/AddRecipe" Component={AddRecipe} />
+        <Route path='/' Component={Feed} />
         <Route path="/Register" Component={AddUser} />
         <Route path="/Users" Component={UsersList} />
         <Route path="/User/:userID" Component={UserDetails} />
