@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AddUser from './Pages/Users/AddUser';
 import AppNavbar from './Components/Navbar';
 import UsersList from './Pages/Users/UsersList';
+import UserDetails from './Pages/Users/UserDetails';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/AddRecipe" Component={AddRecipe} />
         <Route path="/User/Add" Component={AddUser} />
         <Route path="/Users" Component={UsersList} />
+        <Route path="/User/:userID" Component={UserDetails} />
     </Routes>
 </Router>
   );

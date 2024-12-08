@@ -1,11 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Table, Container } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const UsersList = () =>
 {
     const [data, setData] = useState('');
+
+    const navigate = useNavigate();
 
     useEffect(() =>
     {
@@ -19,12 +22,12 @@ const UsersList = () =>
             setData(result.data);
         })
         .catch((error) => toast.error("Error retrieving users"));
-    }
+    };
 
     const handleView = (userID) =>
     {
-
-    }
+        navigate(`/User/${userID}`)
+    };
 
     const handleBlock = (userID) =>
     {
@@ -34,7 +37,8 @@ const UsersList = () =>
         }
 
         
-    }
+    };
+    
     return(
         //<CustomTable headers={['UserID', 'Username', 'Bio']} data={data} actions={(row) => <button className="btn btn-secondary">View</button>} />
         <Container className="mt-3">
