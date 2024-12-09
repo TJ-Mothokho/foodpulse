@@ -6,17 +6,23 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap styles
 import 'react-toastify/dist/ReactToastify.css'; // Toastify styles
 import { TokenProvider } from './TokenContext';
-import { UserProvider } from './UserContext';
+import {UserIDProvider} from './UserContext/UserIDContext';
+import { UsernameProvider} from './UserContext/UsernameContext';
+import { ProfilePictureProvider} from './UserContext/ProfilePictureContext';
+import { RoleProvider } from './UserContext/RoleContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <TokenProvider>
-      <UserProvider>
+    <TokenProvider> <UserIDProvider> <UsernameProvider>
+      <ProfilePictureProvider>
+        <RoleProvider>
+
       <App />
-      </UserProvider>
-    </TokenProvider>
+        </RoleProvider>
+      </ProfilePictureProvider>
+    </UsernameProvider> </UserIDProvider> </TokenProvider>
   </React.StrictMode>
 );
 

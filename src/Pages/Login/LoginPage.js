@@ -6,21 +6,22 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from "react-router-dom";
 import image from './Assets/Images/login.png'
-import { UserContext } from "../../UserContext";
+import {UserIDContext} from '../../UserContext/UserIDContext';
+import {UsernameContext} from '../../UserContext/UsernameContext';
+import {RoleContext} from '../../UserContext/RoleContext';
+import {ProfilePictureContext} from '../../UserContext/ProfilePictureContext';
 
 const Login = () =>
 {
-    const {setUserID} = useContext(UserContext);
-    const {setUsername} = useContext(UserContext);
-    const {setProfilePicture} = useContext(UserContext);
-    const {setRole} = useContext(UserContext);
+    const {setUserID} = useContext(UserIDContext);
+    const {setUsername} = useContext(UsernameContext);
+    const {setProfilePicture} = useContext(ProfilePictureContext);
+    const {setRole} = useContext(RoleContext);
 
     const {setToken} = useContext(TokenContext);
     
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
-
-    const [data, setData] = useState('');
     
 
 
@@ -38,27 +39,16 @@ const Login = () =>
         axios.post(url, data)
         .then((result) =>
         {
-            setData(result.data);
-            assignData();
+            setToken(result.data.token);
+            setUserID(result.data.userID);
+            setUsername(result.data.username);
+            setProfilePicture(result.data.profilePicture);
+            setRole(result.data.role);
             //redirect to new page
             navigate('/dashboard');
         })
         .catch((error) =>
         {console.log(error);})
-    }
-
-    const assignData = () =>
-    {
-        if (data.length > 0) {
-            data.map((items) =>
-        {
-            setUserID(items.userID);
-            setUsername(items.username);
-            setProfilePicture(items.profilePicture);
-            setRole(items.role);
-            setToken(items.token); 
-        });
-        };
     }
 
     const showRecipes = () => {

@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navbar, Nav, Container, NavDropdown, Form, Button } from 'react-bootstrap';
+import { UsernameContext } from '../UserContext/UsernameContext';
 
 // Navbar for navigation
 function AppNavbar() {
+  const {username} = useContext(UsernameContext);
+
   return (
     
     
@@ -15,7 +18,7 @@ function AppNavbar() {
             <Nav.Link href="/Categories">Category</Nav.Link>
 
             <NavDropdown title='Recipes' id='navbarScrollingDropdown'>
-              <NavDropdown.Item href='/Recipes'>Recipes</NavDropdown.Item>
+              <NavDropdown.Item href='/'>Recipes</NavDropdown.Item>
               <NavDropdown.Divider/>
               <NavDropdown.Item href='/Recipe/Add'>New Recipe</NavDropdown.Item>
             </NavDropdown>
@@ -33,7 +36,7 @@ function AppNavbar() {
           </Form>
 
           <Navbar.Text className='mx-5'>
-            Signed in as: <a href='/Profile'>Mark Otto</a>
+            Signed in as: <a href='/profile'>{username}</a>
           </Navbar.Text>
         </Navbar.Collapse>
       </Container>
