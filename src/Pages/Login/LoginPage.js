@@ -28,12 +28,9 @@ const Login = () =>
     const roleDispatch = useDispatch();
     const profilePictureDispatch = useDispatch();
 
-    
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
     
-
-
     const navigate = useNavigate();
 
     const handleLogin = (event) =>

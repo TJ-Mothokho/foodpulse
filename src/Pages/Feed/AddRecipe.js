@@ -3,17 +3,22 @@ import React, {useState, useEffect, Fragment, useContext} from "react";
 import { Row, Col, Form, Container } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const AddRecipe = () =>
-{
-  const [formData, setFormData] = useState({
-    Title: '',
-    Instructions: '',
-    ImageUrl: '',
-    UserID: '',
-    CategoryID: ''
-  });
-
+  {
+    const token = useSelector((state) => state.auth.token); 
+    const userID = useSelector((state) => state.auth.userID); // Access userID
+    const username = useSelector((state) => state.auth.username);
+    const profilePicture = useSelector((state) => state.auth.profilePicture);
+  
+    const [formData, setFormData] = useState({
+      Title: '',
+      Instructions: '',
+      ImageUrl: '',
+      UserID: userID,
+      CategoryID: ''
+    });
 
   const navigate = useNavigate();
 
@@ -24,6 +29,8 @@ const AddRecipe = () =>
      .catch((error) => alert(error));
      navigate('/')
   };
+
+  
 
   return(
     <Container>
@@ -37,9 +44,12 @@ const AddRecipe = () =>
           <label className="form-Label">Title: </label>
           <input className="form-control" type="text" value={formData.Title} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, Title: e.target.value}))} />
         </Col>
+      </Row>
+
+      <Row className="mt-4">
         <Col>
-        <label className="form-Label">User ID: </label>
-        <input className="form-control" type="text" value={formData.UserID} />
+          <label className="form-Label">Instructions: </label>
+          <input className="form-control" type="textarea" value={formData.Instructions} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, Instructions: e.target.value}))} />
         </Col>
       </Row>
 
@@ -49,15 +59,14 @@ const AddRecipe = () =>
           <input className="form-control" type="text" value={formData.ImageUrl} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, ImageUrl: e.target.value}))} />
         </Col>
         <Col>
-        <label className="form-Label">Category ID: </label>
-        <input className="form-control" type="text" value={formData.CategoryID} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, CategoryID: e.target.value}))} />
+          <label className="form-Label">Category ID: </label>
+          <input className="form-control" type="text" value={formData.CategoryID} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, CategoryID: e.target.value}))} />
         </Col>
       </Row>
 
-      <Row className="mt-4">
+      <Row>
         <Col>
-          <label className="form-Label">Instructions: </label>
-          <input className="form-control" type="textarea" value={formData.Instructions} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, Instructions: e.target.value}))} />
+         <input className="form-control" type="text" value={formData.UserID} hidden />
         </Col>
       </Row>
 

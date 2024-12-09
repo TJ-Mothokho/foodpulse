@@ -5,7 +5,10 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     token: localStorage.getItem('token') || '', // Load token from localStorage
-    userID: localStorage.getItem('userID') || '', // Load userID from localStorage
+    userID: localStorage.getItem('userID') || '', 
+    username: localStorage.getItem('username') || '', 
+    role: localStorage.getItem('role') || '', 
+    profilePicture: localStorage.getItem('profilePicture') || '', 
   },
   reducers: {
     setToken: (state, action) => {
