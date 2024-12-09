@@ -1,5 +1,5 @@
 import React, {Fragment, useState, useContext} from "react";
-import { TokenContext } from "../../TokenContext";
+//import { TokenContext } from "../../TokenContext";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
@@ -10,15 +10,18 @@ import {UserIDContext} from '../../UserContext/UserIDContext';
 import {UsernameContext} from '../../UserContext/UsernameContext';
 import {RoleContext} from '../../UserContext/RoleContext';
 import {ProfilePictureContext} from '../../UserContext/ProfilePictureContext';
+import { useDispatch } from 'react-redux';
+import { setToken } from '../../UserContext/Store';
 
 const Login = () =>
 {
-    const {setUserID} = useContext(UserIDContext);
-    const {setUsername} = useContext(UsernameContext);
-    const {setProfilePicture} = useContext(ProfilePictureContext);
-    const {setRole} = useContext(RoleContext);
+    // const {setUserID} = useContext(UserIDContext);
+    // const {setUsername} = useContext(UsernameContext);
+    // const {setProfilePicture} = useContext(ProfilePictureContext);
+    // const {setRole} = useContext(RoleContext);
 
-    const {setToken} = useContext(TokenContext);
+    //const {setToken} = useContext(TokenContext);
+    const dispatch = useDispatch();
     
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
@@ -39,11 +42,11 @@ const Login = () =>
         axios.post(url, data)
         .then((result) =>
         {
-            setToken(result.data.token);
-            setUserID(result.data.userID);
-            setUsername(result.data.username);
-            setProfilePicture(result.data.profilePicture);
-            setRole(result.data.role);
+            dispatch(setToken(result.data.token));
+            // setUserID(result.data.userID);
+            // setUsername(result.data.username);
+            // setProfilePicture(result.data.profilePicture);
+            // setRole(result.data.role);
             //redirect to new page
             navigate('/dashboard');
         })

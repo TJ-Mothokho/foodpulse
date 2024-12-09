@@ -4,7 +4,7 @@ import { UsernameContext } from '../UserContext/UsernameContext';
 
 // Navbar for navigation
 function AppNavbar() {
-  const {username} = useContext(UsernameContext);
+  //const {username} = useContext(UsernameContext);
 
   return (
     
@@ -36,7 +36,7 @@ function AppNavbar() {
           </Form>
 
           <Navbar.Text className='mx-5'>
-            Signed in as: <a href='/profile'>{username}</a>
+            Signed in as: <a href='/profile'></a>
           </Navbar.Text>
         </Navbar.Collapse>
       </Container>

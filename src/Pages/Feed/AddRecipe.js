@@ -1,8 +1,9 @@
 import axios from "axios";
-import React, {useState, useEffect, Fragment} from "react";
+import React, {useState, useEffect, Fragment, useContext} from "react";
 import { Row, Col, Form, Container } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import {UserIDContext} from '../../UserContext/UserIDContext';
 
 const AddRecipe = () =>
 {
@@ -10,9 +11,11 @@ const AddRecipe = () =>
     Title: '',
     Instructions: '',
     ImageUrl: '',
-    UserID: '',
+    UserID: UserID,
     CategoryID: ''
   });
+
+  const {UserID} = useContext(UserIDContext);
 
   const navigate = useNavigate();
 
@@ -39,7 +42,7 @@ const AddRecipe = () =>
         </Col>
         <Col>
         <label className="form-Label">User ID: </label>
-        <input className="form-control" type="text" value={formData.UserID} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, UserID: e.target.value}))} />
+        <input className="form-control" type="text" value={UserID} />
         </Col>
       </Row>
 

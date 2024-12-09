@@ -6,6 +6,7 @@ import addIcon from "../../Components/Images/plus-circle.svg";
 import LikeButton from '../../Components/Images/heart.svg';
 import LikedButton from '../../Components/Images/heart-fill.svg';
 import CommentButton from '../../Components/Images/chat.svg';
+import { useDispatch, useSelector } from "react-redux";
 
 const Feed = () => {
     const [recipes, setRecipes] = useState([]);
@@ -42,6 +43,9 @@ const Feed = () => {
             });
     };
 
+    const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+
     return (
         <div className="container mt-4">
             <h1>Feed</h1>
@@ -65,6 +69,7 @@ const Feed = () => {
                     <p>Loading...</p>
                 )}
             </div>
+            <p>Token: {token}</p>
         </div>
     );
 };
