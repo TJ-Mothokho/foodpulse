@@ -1,10 +1,11 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
-// Step 1: Create a slice for authentication
+// Create a single slice for authentication
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
     token: localStorage.getItem('token') || '', // Load token from localStorage
+    userID: localStorage.getItem('userID') || '', // Load userID from localStorage
   },
   reducers: {
     setToken: (state, action) => {
@@ -15,15 +16,49 @@ const authSlice = createSlice({
       state.token = '';
       localStorage.removeItem('token'); // Remove token from localStorage
     },
+    setUserID: (state, action) => {
+      state.userID = action.payload;
+      localStorage.setItem('userID', action.payload); // Save userID to localStorage
+    },
+    clearUserID: (state) => {
+      state.userID = '';
+      localStorage.removeItem('userID'); // Remove userID from localStorage
+    },
+    setUsername: (state, action) => {
+      state.username = action.payload;
+      localStorage.setItem('username', action.payload); // Save username to localStorage
+    },
+    clearUsername: (state) => {
+      state.username = '';
+      localStorage.removeItem('username'); // Remove username from localStorage
+    },
+    setRole: (state, action) => {
+      state.role = action.payload;
+      localStorage.setItem('role', action.payload); // Save role to localStorage
+    },
+    clearRole: (state) => {
+      state.role = '';
+      localStorage.removeItem('role'); // Remove role from localStorage
+    },
+    setProfilePicture: (state, action) => {
+      state.profilePicture = action.payload;
+      localStorage.setItem('profilePicture', action.payload); // Save profilepicture to localStorage
+    },
+    clearProfilePicture: (state) => {
+      state.profilePicture = '';
+      localStorage.removeItem('profilePicture'); // Remove profilepicture from localStorage
+    },
   },
 });
 
-export const { setToken, clearToken } = authSlice.actions;
+// Export the actions
+export const { setToken, clearToken, setUserID, clearUserID, setUsername, clearUsername, setRole, clearRole, setProfilePicture, clearProfilePicture } = authSlice.actions;
 
-const TokenStore = configureStore({
+// Create and export the store
+const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
   },
 });
 
-export default TokenStore;
+export default store;

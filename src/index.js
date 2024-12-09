@@ -5,16 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap styles
 import 'react-toastify/dist/ReactToastify.css'; // Toastify styles
-import { Provider } from 'react-redux';
-import store from './Store/TokenStore';
+import { Provider as TokenProvider } from 'react-redux';
+import TokenStore from './Store/TokenStore';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
+    <TokenProvider store={TokenStore}>
       <App />
-    </Provider>
+  </TokenProvider>
   </React.StrictMode>
 );
 

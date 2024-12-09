@@ -1,16 +1,33 @@
+//React
 import React, {Fragment, useState, useContext} from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {toast} from 'react-toastify'
+
+//Bootstrap
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import { useNavigate } from "react-router-dom";
-import image from './Assets/Images/login.png';
+
+//Auth
 import { useDispatch } from 'react-redux';
-import { setToken } from '../../Store/TokenStore';
+import { setToken, clearToken } from '../../Store/TokenStore';
+import { setUserID, clearUserID } from '../../Store/TokenStore';
+import { setUsername, clearUsername } from '../../Store/TokenStore';
+import { setRole, clearRole } from '../../Store/TokenStore';
+import { setProfilePicture, clearProfilePicture } from '../../Store/TokenStore';
+
+//Media
+import image from './Assets/Images/login.png';
 
 const Login = () =>
 {
-    const dispatch = useDispatch();
+    const tokenDispatch = useDispatch(); // For token actions
+    const userIDDispatch = useDispatch();
+    const usernameDispatch = useDispatch();
+    const roleDispatch = useDispatch();
+    const profilePictureDispatch = useDispatch();
+
     
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
@@ -31,16 +48,17 @@ const Login = () =>
         axios.post(url, data)
         .then((result) =>
         {
-            dispatch(setToken(result.data.token));
-            // setUserID(result.data.userID);
-            // setUsername(result.data.username);
-            // setProfilePicture(result.data.profilePicture);
-            // setRole(result.data.role);
+            tokenDispatch(setToken(result.data.token)); // Save token
+            userIDDispatch(setUserID(result.data.userID));
+            usernameDispatch(setUsername(result.data.username));
+            profilePictureDispatch(setProfilePicture(result.data.profilePicture));
+            roleDispatch(setRole(result.data.role));
+            
             //redirect to new page
             navigate('/dashboard');
         })
         .catch((error) =>
-        {console.log(error);})
+        {toast.error(error);})
     }
 
     const showRecipes = () => {
