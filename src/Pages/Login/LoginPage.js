@@ -6,12 +6,24 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from "react-router-dom";
 import image from './Assets/Images/login.png'
+import { UserContext } from "../../UserContext";
 
 const Login = () =>
 {
+    const {setUserID} = useContext(UserContext);
+    const {setUsername} = useContext(UserContext);
+    const {setProfilePicture} = useContext(UserContext);
+    const {setRole} = useContext(UserContext);
+
     const {setToken} = useContext(TokenContext);
-    const [username, setUsername] = useState('');
+    
+    const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
+
+    const [data, setData] = useState('');
+    
+
+
     const navigate = useNavigate();
 
     const handleLogin = (event) =>
@@ -25,13 +37,28 @@ const Login = () =>
 
         axios.post(url, data)
         .then((result) =>
-        {setToken(result.data);
-            console.log("Token received:", result.data);
+        {
+            setData(result.data);
+            assignData();
             //redirect to new page
             navigate('/dashboard');
         })
         .catch((error) =>
         {console.log(error);})
+    }
+
+    const assignData = () =>
+    {
+        if (data.length > 0) {
+            data.map((items) =>
+        {
+            setUserID(items.userID);
+            setUsername(items.username);
+            setProfilePicture(items.profilePicture);
+            setRole(items.role);
+            setToken(items.token); 
+        });
+        };
     }
 
     const showRecipes = () => {
@@ -58,7 +85,7 @@ const Login = () =>
                             <form>
                                 <div className="mt-3">
                                     <label className="floating-label form-label">Username:</label>
-                                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="floating-input form-control" required />
+                                    <input type="text" value={username} onChange={(e) => setUserName(e.target.value)} className="floating-input form-control" required />
                                 </div>
                                 <div className="mt-3">
                                     <label className="floating-label form-label">Password:</label>
