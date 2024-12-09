@@ -18,10 +18,12 @@ function App() {
       <AppNavbar/>
     <Routes>
         {/* Define routes */}
-        <Route path="/Login" element={<Login />} /> {/* Login page */}
-        <Route path="/dashboard" element={<Dashboard />} /> {/* Dashboard page */}
-        <Route path="/AddRecipe" Component={AddRecipe} />
+        <Route path="/Login" element={<Login />} /> 
+        <Route path="/dashboard" element={<Dashboard />} /> 
+
         <Route path='/' Component={Feed} />
+        <Route path="/Recipe/Add" Component={AddRecipe} />
+
         <Route path="/Register" Component={AddUser} />
         <Route path="/Users" Component={UsersList} />
         <Route path="/User/:userID" Component={UserDetails} />

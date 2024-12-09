@@ -1,65 +1,72 @@
 import axios from "axios";
-import React, { useState, useEffect, Fragment } from "react";
-import { Button, Card } from 'react-bootstrap';
-import { toast } from 'react-toastify';
+import React, { useState, useEffect } from "react";
+import { Button, Card } from "react-bootstrap";
+import { toast } from "react-toastify";
+import addIcon from "../../Components/Images/plus-circle.svg";
+import LikeButton from '../../Components/Images/heart.svg';
+import LikedButton from '../../Components/Images/heart-fill.svg';
+import CommentButton from '../../Components/Images/chat.svg';
 
-const Feed = () =>
-{
+const Feed = () => {
     const [recipes, setRecipes] = useState([]);
 
-  // Fetch recipes from the API
-  const fetchRecipes = () => {
-    axios
-      .get('/Recipes/GetAll')
-      .then((response) => {
-        setRecipes(response.data);
-      })
-      .catch((error) => {
-        toast.error('Failed to load recipes');
-      });
-  };
+    // Fetch recipes from the API
+    const getRecipes = () => {
+        axios
+            .get("https://localhost:7297/api/Recipes/GetAll")
+            .then((response) => {
+                setRecipes(response.data);
+            })
+            .catch((error) => {
+                toast.error("Failed to load recipes");
+                console.error(error); // For debugging
+            });
+    };
 
-  // Runs when the component is loaded
-  useEffect(() => {
-    fetchRecipes();
-  }, []);
+    // Runs when the component is loaded
+    useEffect(() => {
+        getRecipes();
+    }, []);
 
-  // Handle delete action
-  const handleDelete = (id) => {
-    axios
-      .delete(`/Recipes/Delete/${id}`)
-      .then(() => {
-        toast.success('Recipe deleted');
-        fetchRecipes(); // Refresh data
-      })
-      .catch(() => {
-        toast.error('Failed to delete recipe');
-      });
-  };
+    // Handle delete action
+    const handleDelete = (id) => {
+        axios
+            .delete(`https://localhost:7297/api/Recipes/Delete/${id}`)
+            .then(() => {
+                toast.success("Recipe deleted");
+                getRecipes(); // Refresh data
+            })
+            .catch((error) => {
+                toast.error("Failed to delete recipe");
+                console.error(error); // For debugging
+            });
+    };
 
-  return (
-    <div className="container mt-4">
-      <h1>Feed</h1>
-      <Button variant="primary" href="/users/add">
-        Add Recipe
-      </Button>
-      
-      <Card style={{width:'auto'}} className="mt-5">
-        <Card.Body>
-          <Card.Title>Card Title</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
-          <Card.Text>
-            wsedrctfvybguhnijmewrdytfghuijm
-            exdrcftvgybhunjimkexrdctfvygbhunijm
-            sxrdctfvgybhunijmdcrftvgybhunjmk
-            drcftvgbhnjcrftvgybhunjimk
-          </Card.Text>
-          <Card.Link href="#"><i class="bi bi-star"></i></Card.Link>
-          <Card.Link href="#">Card Link</Card.Link>
-        </Card.Body>
-      </Card>
-    </div>
-  );
-}
+    return (
+        <div className="container mt-4">
+            <h1>Feed</h1>
+            <Button variant="primary" href="/Recipe/add">
+                <img src={addIcon} alt="Add" /> Add Recipe
+            </Button>
+            <div>
+                {recipes && recipes.length > 0 ? (
+                    recipes.map((item, index) => (
+                        <Card style={{ width: "auto" }} className="mt-3" key={index}>
+                            <Card.Body>
+                                <Card.Title>{item.title}</Card.Title>
+                                <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
+                                <Card.Text>{item.instructions}</Card.Text>
+                                <Card.Link href="#"><img className='mx-2' src={LikeButton} alt="like button" /></Card.Link>
+                                <Card.Link href="#"><img className='mx-2' src={CommentButton} alt="comment button" /></Card.Link>
+                            </Card.Body>
+                        </Card>
+                    ))
+                ) : (
+                    <p>Loading...</p>
+                )}
+            </div>
+        </div>
+    );
+};
 
 export default Feed;

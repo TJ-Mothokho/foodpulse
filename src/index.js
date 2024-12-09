@@ -6,13 +6,16 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap styles
 import 'react-toastify/dist/ReactToastify.css'; // Toastify styles
 import { TokenProvider } from './TokenContext';
+import { UserProvider } from './UserContext';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <TokenProvider>
-    <App />
+      <UserProvider>
+      <App />
+      </UserProvider>
     </TokenProvider>
   </React.StrictMode>
 );
