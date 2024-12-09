@@ -1,8 +1,25 @@
 import React, { useContext } from 'react';
 import { Navbar, Nav, Container, NavDropdown, Form, Button } from 'react-bootstrap';
+import { useSelector, useDispatch } from 'react-redux';
+import { clearProfilePicture, clearRole, clearToken, clearUserID, clearUsername } from "../Store/TokenStore";
+import { useNavigate } from 'react-router-dom';
 
 // Navbar for navigation
 function AppNavbar() {
+
+  const username = useSelector((state) => state.auth.username);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(clearToken()); // Clear the token on logout
+    dispatch(clearUserID()); 
+    dispatch(clearUsername()); 
+    dispatch(clearRole()); 
+    dispatch(clearProfilePicture()); 
+    navigate('/login')
+  };
 
   return (
     
@@ -33,9 +50,17 @@ function AppNavbar() {
             <Button variant='outline-light'>Search</Button>
           </Form>
 
-          <Navbar.Text className='mx-5'>
-            Signed in as: <a href='/profile'></a>
-          </Navbar.Text>
+          {
+            username != null ?
+            ((text) =>
+              {
+                <Navbar.Text className='mx-5'>
+                Signed in as: <a href='/'>{username}</a> <button className='btn btn-outline-danger mx-3' onClick={handleLogout}>LogOut</button>
+              </Navbar.Text>
+              })
+              : 
+              ''
+          }
         </Navbar.Collapse>
       </Container>
     </Navbar>
