@@ -69,7 +69,6 @@ const Feed = () => {
                     <p>Loading...</p>
                 )}
             </div>
-            <p>Token: {token}</p>
         </div>
     );
 };

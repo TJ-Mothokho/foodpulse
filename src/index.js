@@ -5,28 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap styles
 import 'react-toastify/dist/ReactToastify.css'; // Toastify styles
-import { TokenProvider } from './TokenContext';
-import {UserIDProvider} from './UserContext/UserIDContext';
-import { UsernameProvider} from './UserContext/UsernameContext';
-import { ProfilePictureProvider} from './UserContext/ProfilePictureContext';
-import { RoleProvider } from './UserContext/RoleContext';
 import { Provider } from 'react-redux';
-import store from './UserContext/Store';
+import store from './Store/TokenStore';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    {/* <TokenProvider> <UserIDProvider> <UsernameProvider>
-      <ProfilePictureProvider>
-        <RoleProvider> */}
-      <Provider store={store}>
-    <App />
-  </Provider>
-      
-        {/* </RoleProvider>
-      </ProfilePictureProvider>
-    </UsernameProvider> </UserIDProvider> </TokenProvider> */}
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );
 

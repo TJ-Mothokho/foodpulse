@@ -20,10 +20,10 @@ const authSlice = createSlice({
 
 export const { setToken, clearToken } = authSlice.actions;
 
-const store = configureStore({
+const TokenStore = configureStore({
   reducer: {
     auth: authSlice.reducer,
   },
 });
 
-export default store;
+export default TokenStore;

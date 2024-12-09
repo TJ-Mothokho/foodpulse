@@ -3,7 +3,6 @@ import React, {useState, useEffect, Fragment, useContext} from "react";
 import { Row, Col, Form, Container } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import {UserIDContext} from '../../UserContext/UserIDContext';
 
 const AddRecipe = () =>
 {
@@ -11,17 +10,15 @@ const AddRecipe = () =>
     Title: '',
     Instructions: '',
     ImageUrl: '',
-    UserID: UserID,
+    UserID: '',
     CategoryID: ''
   });
 
-  const {UserID} = useContext(UserIDContext);
 
   const navigate = useNavigate();
 
   const handleSave = () =>
   {
-    alert("In Save Handle")
     axios.post('https://localhost:7297/api/Recipes/Add', formData)
      .then((response) => alert(response))
      .catch((error) => alert(error));
@@ -42,7 +39,7 @@ const AddRecipe = () =>
         </Col>
         <Col>
         <label className="form-Label">User ID: </label>
-        <input className="form-control" type="text" value={UserID} />
+        <input className="form-control" type="text" value={formData.UserID} />
         </Col>
       </Row>
 

@@ -1,10 +1,8 @@
 import React, { useContext } from 'react';
 import { Navbar, Nav, Container, NavDropdown, Form, Button } from 'react-bootstrap';
-import { UsernameContext } from '../UserContext/UsernameContext';
 
 // Navbar for navigation
 function AppNavbar() {
-  //const {username} = useContext(UsernameContext);
 
   return (
     

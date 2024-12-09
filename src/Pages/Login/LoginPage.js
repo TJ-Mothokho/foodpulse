@@ -1,26 +1,15 @@
 import React, {Fragment, useState, useContext} from "react";
-//import { TokenContext } from "../../TokenContext";
 import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from "react-router-dom";
-import image from './Assets/Images/login.png'
-import {UserIDContext} from '../../UserContext/UserIDContext';
-import {UsernameContext} from '../../UserContext/UsernameContext';
-import {RoleContext} from '../../UserContext/RoleContext';
-import {ProfilePictureContext} from '../../UserContext/ProfilePictureContext';
+import image from './Assets/Images/login.png';
 import { useDispatch } from 'react-redux';
-import { setToken } from '../../UserContext/Store';
+import { setToken } from '../../Store/TokenStore';
 
 const Login = () =>
 {
-    // const {setUserID} = useContext(UserIDContext);
-    // const {setUsername} = useContext(UsernameContext);
-    // const {setProfilePicture} = useContext(ProfilePictureContext);
-    // const {setRole} = useContext(RoleContext);
-
-    //const {setToken} = useContext(TokenContext);
     const dispatch = useDispatch();
     
     const [username, setUserName] = useState('');
