@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { Col, Container, Row } from "react-bootstrap";
+import addIcon from '../../Components/Images/plus-circle.svg'
 
 const AddUser = () =>
 {
@@ -78,7 +79,7 @@ const AddUser = () =>
                 </Row>
                 <Row>
                     <Col>
-                        <button className="btn btn-primary" onClick={handleSave}>Add</button>
+                        <button className="btn btn-primary" onClick={handleSave}><img src={addIcon} alt='add button' /> Add</button>
                     </Col>
                 </Row>
             </form>
