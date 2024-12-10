@@ -27,9 +27,23 @@ apiClient.interceptors.request.use(
 );
 
 export const apiEndpoints = {
-  getCategories: '/Categories/GetAll',
-  addRecipe: '/Recipes/Add',
-  // Add more endpoints as needed
+    // Users
+    login: '/Auth/Login',
+
+    //Recipes
+    viewRecipes: '/Recipes/GetAll',
+    addRecipe: '/Recipes/Add',
+    
+    //Category
+    getCategories: '/Categories/GetAll',
+    
+  //Like
+
+  //Comment
+
+  //Hashtag
+
+
 };
 
 export default apiClient;

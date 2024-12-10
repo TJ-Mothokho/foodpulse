@@ -13,7 +13,7 @@ const AddRecipe = () =>
     const username = useSelector((state) => state.auth.username);
     const profilePicture = useSelector((state) => state.auth.profilePicture);
 
-    const [categories, setCategories] = useState('');
+    const [categories, setCategories] = useState([]);
 
     const [formData, setFormData] = useState({
       Title: '',
@@ -56,13 +56,19 @@ const AddRecipe = () =>
     }
   };
   
-
+  useEffect(() => {
+    getCategories();
+}, []);
   //Need to dynamically add categories
-  const getCategories = () =>
+  const getCategories = async () =>
   {
-    axios.post('https://localhost:7297/api/Categories/GetAll')
-     .then((response) => alert(response))
-     .catch((error) => alert(error));
+     try {
+      const response = await apiClient.get(apiEndpoints.getCategories); // Make the API call
+      setCategories(response.data); // Update the state with the recipes
+    } catch (error) {
+      toast.error("Failed to load recipes"); // Show error toast
+      console.error(error); // For debugging
+    }
   }
 
   return(
@@ -92,16 +98,16 @@ const AddRecipe = () =>
           <input className="form-control" type="text" value={formData.ImageUrl} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, ImageUrl: e.target.value}))} />
         </Col>
         <Col>
-          <label className="form-Label">Category ID: </label>
+          <label className="form-Label">Category: </label>
           {/* <input className="form-control" type="text" value={formData.CategoryID} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, CategoryID: e.target.value}))} /> */}
           <select className="form-select" value={formData.CategoryID} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, CategoryID: e.target.value}))} >
-            <option value=''>Select an option...</option>
-            <option value='0180cd0a-0adb-49a5-bfb0-08dd167945ba'>Breakfast</option>
-            <option value='6963bf08-83f5-4f6c-94d3-08dd1895a605'>Brunch</option>
-            <option value='9c650193-5599-4088-94d5-08dd1895a605'>Dinner</option>
-            <option value='f6df7ac5-fd49-4c4d-94d4-08dd1895a605'>Lunch</option>
-            <option value='e99365a1-e06c-45ac-94d6-08dd1895a605'>Snack</option>
-          </select>
+          <option value="">Select an option...</option>
+  {categories.map((category) => (
+    <option key={category.categoryID} value={category.categoryID}>
+      {category.name}
+    </option>
+  ))}
+            </select>
         </Col>
       </Row>
 

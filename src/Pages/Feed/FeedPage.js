@@ -7,22 +7,23 @@ import LikeButton from '../../Components/Images/heart.svg';
 import LikedButton from '../../Components/Images/heart-fill.svg';
 import CommentButton from '../../Components/Images/chat.svg';
 import { useDispatch, useSelector } from "react-redux";
+import apiClient, {apiEndpoints} from "../../Api/api";
 
 const Feed = () => {
     const [recipes, setRecipes] = useState([]);
 
     // Fetch recipes from the API
-    const getRecipes = () => {
-        axios
-            .get("https://localhost:7297/api/Recipes/GetAll")
-            .then((response) => {
-                setRecipes(response.data);
-            })
-            .catch((error) => {
-                toast.error("Failed to load recipes");
-                console.error(error); // For debugging
-            });
-    };
+    const getRecipes = async () => {
+        try {
+          const response = await apiClient.get(apiEndpoints.viewRecipes); // Make the API call
+          setRecipes(response.data); // Update the state with the recipes
+        } catch (error) {
+          toast.error("Failed to load recipes"); // Show error toast
+          console.error(error); // For debugging
+        }
+      };
+      
+    
 
     // Runs when the component is loaded
     useEffect(() => {

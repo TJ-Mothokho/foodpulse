@@ -1,6 +1,6 @@
 //React
 import React, {Fragment, useState, useContext} from "react";
-import axios from "axios";
+import apiClient, {apiEndpoints} from "../../Api/api";
 import { useNavigate } from "react-router-dom";
 import {toast} from 'react-toastify'
 
@@ -33,7 +33,7 @@ const Login = () =>
     
     const navigate = useNavigate();
 
-    const handleLogin = (event) =>
+    const handleLogin = async (event) =>
     {
         event.preventDefault();
         const url = 'https://localhost:7297/api/Auth/Login'
@@ -42,35 +42,21 @@ const Login = () =>
             "password": password
         }
 
-        axios.post(url, data)
-        .then((result) =>
-        {
+        try {
+            const result = await apiClient.post(apiEndpoints.login, data); // Make the API call
             tokenDispatch(setToken(result.data.token)); // Save token
             userIDDispatch(setUserID(result.data.userID));
             usernameDispatch(setUsername(result.data.username));
             profilePictureDispatch(setProfilePicture(result.data.profilePicture));
             roleDispatch(setRole(result.data.role));
-            
-            //redirect to new page
-            navigate('/dashboard');
-        })
-        .catch((error) =>
-        {toast.error(error);})
+            navigate('/')
+          } catch (error) {
+            toast.error("Invalid username or password!"); // Show error toast
+            console.error(error); // For debugging
+          }
+
     }
 
-    const showRecipes = () => {
-        axios.get('https://localhost:7297/api/Recipes/GetAll', {
-            headers: {
-                Authorization: `Bearer ${setToken}`, 
-            },
-        })
-        .then((result) => {
-            console.log(result.data); //just to double check
-        })
-        .catch((error) => {
-            console.error("Error fetching recipes:", error);
-        });
-    };
 
     return(
         <Fragment>
