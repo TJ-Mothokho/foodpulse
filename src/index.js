@@ -7,6 +7,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap styles
 import 'react-toastify/dist/ReactToastify.css'; // Toastify styles
 import { Provider as TokenProvider } from 'react-redux';
 import TokenStore from './Store/TokenStore';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -4,6 +4,7 @@ import { Row, Col, Form, Container } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import apiClient, { apiEndpoints} from '../../Api/api';
 
 const AddRecipe = () =>
   {
@@ -27,7 +28,7 @@ const AddRecipe = () =>
 
   const navigate = useNavigate();
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
   
     // Ensure `UserID` and `CategoryID` are properly set
@@ -37,23 +38,22 @@ const AddRecipe = () =>
       ImageUrl: formData.ImageUrl,
       UserID: userID, // Fetch UserID from state
       CategoryID: formData.CategoryID, // Make sure this is set correctly
-      Hashtags: formData.Hashtag, // Note: match case with API expectation
+      Hashtags: ['munching'], // Note: match case with API expectation
     };
   
     // Log data for debugging
     console.log(data);
   
     // Send POST request
-    axios
-      .post('https://localhost:7297/api/Recipes/Add', data)
-      .then((response) => {
-        toast.success('Recipe added successfully!');
-        navigate('/');
-      })
-      .catch((error) => {
-        console.error(error.response?.data || error.message); // Log detailed error
-        toast.error('Failed to add recipe.');
-      });
+    try {
+      const response = await apiClient.post(apiEndpoints.addRecipe, data);
+      toast.success('Recipe added successfully!');
+      console.log(response.data);
+      navigate('/');
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      toast.error('Failed to add recipe.');
+    }
   };
   
 

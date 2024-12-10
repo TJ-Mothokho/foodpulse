@@ -10,12 +10,14 @@ import AppNavbar from './Components/Navbar';
 import UsersList from './Pages/Users/UsersList';
 import UserDetails from './Pages/Users/UserDetails';
 import Feed from './Pages/Feed/FeedPage';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     
+      
     <Router>
-      <AppNavbar/>
+        <AppNavbar/>
     <Routes>
         {/* Define routes */}
         <Route path="/Login" element={<Login />} /> 
@@ -29,7 +31,9 @@ function App() {
         <Route path="/User/:userID" Component={UserDetails} />
     </Routes>
     
+<ToastContainer/>
 </Router>
+      
   );
 }
 
