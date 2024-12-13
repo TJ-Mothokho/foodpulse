@@ -61,7 +61,7 @@ function AppNavbar() {
             Signed in as: <a href="/">{username}</a>{' '}
             <button
               className="btn btn-outline-danger mx-3"
-              onClick={handleLogout}
+              onClick={handleLogout} 
             >
               LogOut
             </button>
