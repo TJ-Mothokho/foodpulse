@@ -38,6 +38,9 @@ export const apiEndpoints = {
     getCategories: '/Categories/GetAll',
     
   //Like
+  like: '/Like?',
+  removeLike: '/RemoveLike?',
+  getLikes: '/Likes/GetAll?userID='
 
   //Comment
 
