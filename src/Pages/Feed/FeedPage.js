@@ -113,7 +113,7 @@ return (
             <Card style={{ width: "auto" }} className="mt-3" key={index}>
               <Card.Body>
                 <Card.Title>{item.title}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
+                <Card.Subtitle className="mb-2 text-muted">{'@' + item.userName}</Card.Subtitle>
                 <Card.Text>{item.instructions}</Card.Text>
 
                 {userID && (
