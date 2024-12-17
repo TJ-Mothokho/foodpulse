@@ -40,7 +40,8 @@ export const apiEndpoints = {
   //Like
   like: '/Like?',
   removeLike: '/RemoveLike?',
-  getLikes: '/Likes/GetAll?userID='
+  getLikes: '/Likes/GetAll?userID=',
+  getLikesCount: '/Likes/GetLikeCount',
 
   //Comment
 

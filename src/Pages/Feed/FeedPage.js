@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 const Feed = () => {
   const [recipes, setRecipes] = useState([]);
   const [likes, setLikes] = useState([]);
+  const [likeCount, setLikeCount] = useState([]);
   const userID = useSelector((state) => state.auth.userID);
   const navigate = useNavigate();
 
@@ -22,6 +23,7 @@ const Feed = () => {
     }
     else{
       getRecipes();
+      getLikesCount();
       getLikes();
     }
   }, []);
@@ -46,6 +48,15 @@ const Feed = () => {
       console.error(error);
     }
   };
+
+  const getLikesCount = async () => {
+    try{
+      const response = await apiClient.get(apiEndpoints.getLikesCount);
+      setLikeCount(response.data);
+    } catch (error) {
+      toast.error("Failed to load like count");
+    }
+  }
 
   
 
@@ -77,37 +88,54 @@ const Feed = () => {
     // Handle comment logic
   };
 
-  return (
-    <div className="container mt-4">
-      <h1>Feed</h1>
-      <Button variant="primary" href="/Recipe/add">
-        <img src={addIcon} alt="Add" /> Add Recipe
-      </Button>
-      <div>
-        {recipes && recipes.length > 0 ? (
-          recipes.map((item, index) => (
+  // Check if the recipe is liked and get its like count
+const getRecipeLikeCount = (recipeID) => {
+  const countItem = likeCount.find((count) => count.recipeID === recipeID);
+  return countItem ? countItem.likeCount : 0; // Return 0 if no match
+};
+
+return (
+  <div className="container mt-4">
+    <h1>Feed</h1>
+    <Button variant="primary" href="/Recipe/add">
+      <img src={addIcon} alt="Add" /> Add Recipe
+    </Button>
+    <div>
+      {recipes && recipes.length > 0 ? (
+        recipes.map((item, index) => {
+          // Check if the current recipe is liked by the user
+          const isLiked = likes.some(
+            (like) => like.recipeID === item.recipeID && like.isLiked
+          );
+          const likeCountForRecipe = getRecipeLikeCount(item.recipeID); // Get the like count
+
+          return (
             <Card style={{ width: "auto" }} className="mt-3" key={index}>
               <Card.Body>
                 <Card.Title>{item.title}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
                 <Card.Text>{item.instructions}</Card.Text>
+
                 {userID && (
-                  likes.some((like) => like.recipeID === item.recipeID && like.isLiked) ? (
+                  isLiked ? (
                     <Button
                       className="btn btn-primary mx-1"
                       onClick={() => handleRemoveLike(item.recipeID)}
                     >
-                      <img className="mx-2" src={LikedButton} alt="like button" /> 5
+                      <img className="mx-2" src={LikedButton} alt="liked button" />
+                      {likeCountForRecipe}
                     </Button>
                   ) : (
                     <Button
                       className="btn btn-primary mx-1"
                       onClick={() => handleLike(item.recipeID)}
                     >
-                      <img className="mx-2" src={LikeButton} alt="like button" /> 5
+                      <img className="mx-2" src={LikeButton} alt="like button" />
+                      {likeCountForRecipe}
                     </Button>
                   )
                 )}
+
                 <Button
                   className="btn btn-primary mx-1"
                   onClick={() => handleComment(item.recipeID)}
@@ -116,13 +144,14 @@ const Feed = () => {
                 </Button>
               </Card.Body>
             </Card>
-          ))
-        ) : (
-          <p>Loading...</p>
-        )}
-      </div>
+          );
+        })
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
-  );
+  </div>
+);
 };
 
 export default Feed;
