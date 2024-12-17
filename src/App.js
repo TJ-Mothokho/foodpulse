@@ -11,11 +11,13 @@ import UsersList from './Pages/Users/UsersList';
 import UserDetails from './Pages/Users/UserDetails';
 import Feed from './Pages/Feed/FeedPage';
 import { ToastContainer } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
-  return (
-    
-      
+  
+
+  return (  
     <Router>
         <AppNavbar/>
     <Routes>
@@ -30,7 +32,6 @@ function App() {
         <Route path="/Users" Component={UsersList} />
         <Route path="/User/:userID" Component={UserDetails} />
     </Routes>
-    
 <ToastContainer/>
 </Router>
       

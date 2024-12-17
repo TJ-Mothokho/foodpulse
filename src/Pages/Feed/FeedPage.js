@@ -8,13 +8,25 @@ import LikedButton from "../../Components/Images/heart-fill.svg";
 import CommentButton from "../../Components/Images/chat.svg";
 import { useDispatch, useSelector } from "react-redux";
 import apiClient, { apiEndpoints } from "../../Api/api";
+import { useNavigate } from "react-router-dom";
 
 const Feed = () => {
   const [recipes, setRecipes] = useState([]);
   const [likes, setLikes] = useState([]);
   const userID = useSelector((state) => state.auth.userID);
+  const navigate = useNavigate();
 
-  // Fetch recipes from the API
+  useEffect(() => {
+    if (userID == null || userID == '') {
+      navigate('/login')
+    }
+    else{
+      getRecipes();
+      getLikes();
+    }
+  }, []);
+
+  // Fetch data from the API
   const getRecipes = async () => {
     try {
       const response = await apiClient.get(apiEndpoints.viewRecipes);
@@ -35,10 +47,7 @@ const Feed = () => {
     }
   };
 
-  useEffect(() => {
-    getRecipes();
-    getLikes();
-  }, []);
+  
 
   // Handle like action
   const handleLike = async (recipeID) => {
