@@ -13,27 +13,28 @@ import Feed from './Pages/Feed/FeedPage';
 import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Button, Card, Modal, Row, Col, Container } from "react-bootstrap";
 
 function App() {
   
 
   return (  
-    <Router>
-        <AppNavbar/>
-    <Routes>
-        {/* Define routes */}
-        <Route path="/Login" element={<Login />} /> 
-        <Route path="/dashboard" element={<Dashboard />} /> 
+        <Router>
+          <AppNavbar/>
+          <Routes>
+              {/* Define routes */}
+              <Route path="/Login" element={<Login />} /> 
+              <Route path="/dashboard" element={<Dashboard />} /> 
 
-        <Route path='/' Component={Feed} />
-        <Route path="/Recipe/Add" Component={AddRecipe} />
+              <Route path='/' Component={Feed} />
+              <Route path="/Recipe/Add" Component={AddRecipe} />
 
-        <Route path="/Register" Component={AddUser} />
-        <Route path="/Users" Component={UsersList} />
-        <Route path="/User/:userID" Component={UserDetails} />
-    </Routes>
-<ToastContainer/>
-</Router>
+              <Route path="/Register" Component={AddUser} />
+              <Route path="/Users" Component={UsersList} />
+              <Route path="/User/:userID" Component={UserDetails} />
+          </Routes>
+          <ToastContainer/>
+        </Router>
       
   );
 }

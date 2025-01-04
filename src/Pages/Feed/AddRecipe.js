@@ -88,7 +88,13 @@ const AddRecipe = () =>
       <Row className="mt-4">
         <Col>
           <label className="form-Label">Instructions: </label>
-          <input className="form-control" type="text" value={formData.Instructions} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, Instructions: e.target.value}))} />
+          <input className="form-control" placeholder="Step 1" type="text" value={formData.Instructions} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, Instructions: e.target.value}))} />
+        </Col>
+      </Row>
+
+      <Row className="mt-1">
+        <Col>
+          <button className="btn btn-primary" onClick={handleSave}>Add</button>
         </Col>
       </Row>
 

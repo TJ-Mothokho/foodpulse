@@ -7,7 +7,9 @@ import LikedButton from "../../Components/Images/heart-fill.svg";
 import CommentButton from "../../Components/Images/chat.svg";
 import { useDispatch, useSelector } from "react-redux";
 import apiClient, { apiEndpoints } from "../../Api/api";
+import { clearProfilePicture, clearRole, clearToken, clearUserID, clearUsername } from "../../Store/TokenStore";
 import { useNavigate } from "react-router-dom";
+import './Feed.css'
 
 const Feed = () => {
   const [recipes, setRecipes] = useState([]);
@@ -21,6 +23,17 @@ const Feed = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [categories, setCategories] = useState([]);
+
+  const dispatch = useDispatch();
+  
+    const handleLogout = () => {
+      dispatch(clearToken()); // Clear the token on logout
+      dispatch(clearUserID()); 
+      dispatch(clearUsername()); 
+      dispatch(clearRole()); 
+      dispatch(clearProfilePicture()); 
+      navigate('/login')
+    };
   
   const [formData, setFormData] = useState({
     Title: '',
@@ -143,59 +156,97 @@ const Feed = () => {
 
   return (
     <div className="container mt-4">
-      <h1>Feed</h1>
-      <Button variant="primary" onClick={handleShow}>
-        <img src={addIcon} alt="Add" /> Add Recipe
-      </Button>
-      <div>
-        {recipes && recipes.length > 0 ? (
-          recipes.map((item, index) => {
-            const isLiked = likes.some(
-              (like) => like.recipeID === item.recipeID && like.isLiked
-            );
-            const likeCountForRecipe = getRecipeLikeCount(item.recipeID);
+      <Row>
+        <Col className="col-3">
+          <div className="side-bar">
+            <Card style={{ width: "auto" }} className="mt-3">
+              <Card.Body>
+                ProfilePicture goes here
+                <Card.Title>@{username}</Card.Title>
+                0 Following  0 Followers
+                <div className="Sidebar-Nav">
+                  <ul>
+                    {
+                      username ? 
+                      (<div className="">
+                          <Row className="mt-1">
+                            <button className="btn btn-outline-secondary mx-3 block" onClick={handleLogout} > Profile </button>
+                          </Row>
 
-            return (
-              <Card style={{ width: "auto" }} className="mt-3" key={index}>
-                <Card.Body>
-                  <Card.Title>{item.title}</Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">{'@' + item.userName}</Card.Subtitle>
-                  <Card.Text>{item.instructions}</Card.Text>
+                          <Row className="mt-1">
+                            <button className="btn btn-outline-secondary mx-3 block" onClick={handleLogout} > Liked Posts </button>
+                          </Row>
 
-                  {userID && (
-                    isLiked ? (
-                      <Button
-                        className="btn btn-primary mx-1"
-                        onClick={() => handleRemoveLike(item.recipeID)}
-                      >
-                        <img className="mx-2" src={LikedButton} alt="liked button" />
-                        {likeCountForRecipe}
-                      </Button>
-                    ) : (
-                      <Button
-                        className="btn btn-primary mx-1"
-                        onClick={() => handleLike(item.recipeID)}
-                      >
-                        <img className="mx-2" src={LikeButton} alt="like button" />
-                        {likeCountForRecipe}
-                      </Button>
-                    )
-                  )}
-
-                  <Button
-                    className="btn btn-primary mx-1"
-                    onClick={() => console.log("Comment button clicked")}
-                  >
-                    <img className="mx-2" src={CommentButton} alt="comment button" /> 1
-                  </Button>
-                </Card.Body>
-              </Card>
-            );
-          })
-        ) : (
-          <p>Loading...</p>
-        )}
-      </div>
+                          <Row className="mt-1">
+                            <button className="btn btn-outline-danger mx-3 block" onClick={handleLogout} > Log out </button>
+                          </Row>
+                      </div>) : (null)
+                    }
+                  </ul>
+                </div>
+              </Card.Body>
+            </Card>
+          </div>
+        </Col>
+  
+        <Col className="col-9">
+          <div className="main-section">
+            <h1>Feed</h1>
+            <Button variant="primary" onClick={handleShow}>
+              <img src={addIcon} alt="Add" /> Add Recipe
+            </Button>
+            <div>
+              {recipes && recipes.length > 0 ? (
+                recipes.map((item, index) => {
+                  const isLiked = likes.some(
+                    (like) => like.recipeID === item.recipeID && like.isLiked
+                  );
+                  const likeCountForRecipe = getRecipeLikeCount(item.recipeID);
+    
+                  return (
+                    <Card style={{ width: "auto" }} className="mt-3" key={index}>
+                      <Card.Body>
+                        <Card.Title>{item.title}</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">{'@' + item.userName}</Card.Subtitle>
+                        <Card.Text>{item.instructions}</Card.Text>
+    
+                        {userID && (
+                          isLiked ? (
+                            <Button
+                              className="btn btn-primary mx-1"
+                              onClick={() => handleRemoveLike(item.recipeID)}
+                            >
+                              <img className="mx-2" src={LikedButton} alt="liked button" />
+                              {likeCountForRecipe}
+                            </Button>
+                          ) : (
+                            <Button
+                              className="btn btn-primary mx-1"
+                              onClick={() => handleLike(item.recipeID)}
+                            >
+                              <img className="mx-2" src={LikeButton} alt="like button" />
+                              {likeCountForRecipe}
+                            </Button>
+                          )
+                        )}
+    
+                        <Button
+                          className="btn btn-primary mx-1"
+                          onClick={() => console.log("Comment button clicked")}
+                        >
+                          <img className="mx-2" src={CommentButton} alt="comment button" /> 1
+                        </Button>
+                      </Card.Body>
+                    </Card>
+                  );
+                })
+              ) : (
+                <p>Loading...</p>
+              )}
+            </div>
+          </div>
+        </Col>
+      </Row>
 
 
       <Modal show={show} onHide={handleClose}>
@@ -214,14 +265,20 @@ const Feed = () => {
       <Row className="mt-4">
         <Col>
           <label className="form-Label">Instructions: </label>
-          <input className="form-control" type="text" value={formData.Instructions} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, Instructions: e.target.value}))} />
+          <input className="form-control" placeholder="Step 1" type="text" value={formData.Instructions} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, Instructions: e.target.value}))} />
+        </Col>
+      </Row>
+      
+      <Row className="mt-1">
+        <Col>
+          <button className="btn btn-outline-primary" onClick={handleSave}>Next step</button>
         </Col>
       </Row>
 
       <Row className="mt-4">
-        <Col>
+        <Col className="col-7">
           <label className="form-Label">Image Url: </label>
-          <input className="form-control" type="text" value={formData.ImageUrl} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, ImageUrl: e.target.value}))} />
+          <input className="form-control" type="file"  onChange={(e) => setFormData((prevFormData) => ({...prevFormData, ImageUrl: e.target.value}))} />
         </Col>
         <Col>
           <label className="form-Label">Category: </label>
