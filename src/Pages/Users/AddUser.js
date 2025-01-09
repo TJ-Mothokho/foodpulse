@@ -12,7 +12,7 @@ const AddUser = () =>
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [website, setWebsite] = useState("");
     const [bio, setBio] = useState("");
-    const [profilePicture, setProfilePicture] = useState("");
+    const [profilePicture, setProfilePicture] = useState(null);
 
     const data = {
         "username": username,
@@ -24,12 +24,32 @@ const AddUser = () =>
         "profilePicture": profilePicture
     }
 
-    const handleSave = () =>
-    {
-        axios.post('https://localhost:7297/api/Users/Add', data)
-        .then((result) => toast.success(result.data))
+    const handleImageChange = (event) => {
+        setProfilePicture(event.target.files[0]);
+    };
+
+    // const handleSave = () =>
+    // {
+    //     axios.post('https://localhost:7297/api/Users/Add', data)
+    //     .then((result) => toast.success(result.data))
+    //     .catch((error) => toast.error(error))
+    //     console.log(data.dateOfBirth);
+    // }
+
+    const handleSave = () => {
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+        formData.append("email", email);
+        formData.append("dateOfBirth", dateOfBirth);
+        formData.append("website", website);
+        formData.append("bio", bio);
+        formData.append("profilePicture", profilePicture);
+
+        axios.post('https://localhost:7297/api/Users/Add', formData)
+        .then((result) => toast.success("added"))
         .catch((error) => toast.error(error))
-        console.log(data.dateOfBirth);
+        alert("done");
     }
 
     return(
@@ -74,7 +94,7 @@ const AddUser = () =>
                 <Row>
                     <Col>
                         <label className="form-label">Profile Picture:</label>
-                        <input className="form-control" type="text" value={profilePicture} onChange={(e) => setProfilePicture(e.target.value)} />
+                        <input className="form-control" type="file" onChange={handleImageChange} />
                     </Col>
                 </Row>
                 <Row>

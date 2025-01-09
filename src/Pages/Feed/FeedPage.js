@@ -9,7 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import apiClient, { apiEndpoints } from "../../Api/api";
 import { clearProfilePicture, clearRole, clearToken, clearUserID, clearUsername } from "../../Store/TokenStore";
 import { useNavigate } from "react-router-dom";
-import './Feed.css'
+import './Feed.css';
+import axios from "axios";
 
 const Feed = () => {
   const [recipes, setRecipes] = useState([]);
@@ -24,6 +25,13 @@ const Feed = () => {
   const handleShow = () => setShow(true);
   const [categories, setCategories] = useState([]);
 
+  const [steps, setSteps] = useState(['']);
+
+  const [title, setTitle] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const [categoryID, setCategoryID] = useState('');
+  const [image, setImage] = useState(null);
+
   const dispatch = useDispatch();
   
     const handleLogout = () => {
@@ -35,43 +43,58 @@ const Feed = () => {
       navigate('/login')
     };
   
-  const [formData, setFormData] = useState({
-    Title: '',
-    Instructions: '',
-    ImageUrl: '',
-    UserID: userID,
-    CategoryID: '',
-    Hashtag:[
-      'eat'
-    ]
-  });
 
   const handleSave = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
   
+    const allSteps = steps.join('\n');
+    alert(allSteps);
     // Ensure `UserID` and `CategoryID` are properly set
-    const data = {
-      Title: formData.Title,
-      Instructions: formData.Instructions,
-      ImageUrl: formData.ImageUrl,
-      UserID: userID, // Fetch UserID from state
-      CategoryID: formData.CategoryID, // Make sure this is set correctly
-      Hashtags: ['munching'], // Note: match case with API expectation
-    };
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("instructions", allSteps);
+    formData.append("userID", userID);
+    formData.append("categoryID", categoryID);
+    formData.append("image", image);
+      
+
+      alert();
+      
+      
+      
+      
+      
+      // Title: formData.Title,
+      // Instructions: allSteps,
+      // Image: image,
+      // UserID: userID, // Fetch UserID from state
+      // CategoryID: formData.CategoryID // Make sure this is set correctly
+      // //Hashtags: ['munching'], // Note: match case with API expectation
+    
+
+
   
     // Log data for debugging
-    console.log(data);
+    console.log('data:');
+    console.log(formData);
+
+    axios.post('https://localhost:7297/api/Recipes/Add', formData)
+            .then((result) => toast.success("added"))
+            .catch((error) => toast.error(error))
+            navigate('/');
   
     // Send POST request
-    try {
-      const response = await apiClient.post(apiEndpoints.addRecipe, data);
-      toast.success('Recipe added successfully!');
-      console.log(response.data);
-      navigate('/');
-    } catch (error) {
-      console.error(error.response?.data || error.message);
-      toast.error('Failed to add recipe.');
-    }
+    // try {
+    //   const response = apiClient.post(apiEndpoints.addRecipe, formData);
+    //   toast.success('Recipe added successfully!');
+    //   console.log(response.data);
+    //   navigate('/');
+    // } catch (error) {
+    //   console.error(error.response?.data || error.message);
+    //   toast.error('Failed to add recipe.');
+    // }
+
+    handleClear();
     handleClose();
   };
 
@@ -137,6 +160,14 @@ const Feed = () => {
     }
   };
 
+  const handleLikedPosts = async => {
+    navigate('/LikedPosts/' + userID)
+  }
+
+  const handleProfile = async => {
+    navigate('/' + userID)
+  }
+
   const getRecipeLikeCount = (recipeID) => {
     const countItem = likeCount.find((count) => count.recipeID === recipeID);
     return countItem ? countItem.likeCount : 0; // Return 0 if no match
@@ -154,6 +185,31 @@ const Feed = () => {
     }
   }
 
+  const addStep = (e) => {
+    e.preventDefault();
+    setSteps([...steps, '']);
+  }
+
+  const handleStepChange = (index, value) => {
+    const newSteps = [...steps];
+    newSteps[index] = value;
+    setSteps(newSteps);
+    console.log(index, value);
+  }
+
+  const handleClear = () => {
+    setTitle('');
+    setImage('');
+    setCategoryID('');
+    setInstructions('');
+    setSteps([]);
+    
+  }
+
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]);
+};
+
   return (
     <div className="container mt-4">
       <Row>
@@ -170,11 +226,11 @@ const Feed = () => {
                       username ? 
                       (<div className="">
                           <Row className="mt-1">
-                            <button className="btn btn-outline-secondary mx-3 block" onClick={handleLogout} > Profile </button>
+                            <button className="btn btn-outline-secondary mx-3 block" onClick={handleProfile} > Profile </button>
                           </Row>
 
                           <Row className="mt-1">
-                            <button className="btn btn-outline-secondary mx-3 block" onClick={handleLogout} > Liked Posts </button>
+                            <button className="btn btn-outline-secondary mx-3 block" onClick={handleLikedPosts} > Liked Posts </button>
                           </Row>
 
                           <Row className="mt-1">
@@ -207,7 +263,7 @@ const Feed = () => {
                     <Card style={{ width: "auto" }} className="mt-3" key={index}>
                       <Card.Body>
                         <Card.Title>{item.title}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">{'@' + item.userName}</Card.Subtitle>
+                        <Card.Subtitle className="mb-2 text-muted"><a href='{handleProfile}' className="text-decoration-none">@{item.userName}</a></Card.Subtitle>
                         <Card.Text>{item.instructions}</Card.Text>
     
                         {userID && (
@@ -258,32 +314,36 @@ const Feed = () => {
       <Row className="mt-4">
         <Col>
           <label className="form-Label">Title: </label>
-          <input className="form-control" type="text" value={formData.Title} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, Title: e.target.value}))} />
+          <input className="form-control" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
         </Col>
       </Row>
 
       <Row className="mt-4">
-        <Col>
           <label className="form-Label">Instructions: </label>
-          <input className="form-control" placeholder="Step 1" type="text" value={formData.Instructions} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, Instructions: e.target.value}))} />
+        <Col>
+          {steps.map((step, index) => (
+            <div key={index}>
+              <input type="text" placeholder={`Step ${index + 1}`} value={step} onChange={(e) => handleStepChange(index, e.target.value)}  className="form-control"/>
+            </div>
+          ))}
         </Col>
       </Row>
       
       <Row className="mt-1">
         <Col>
-          <button className="btn btn-outline-primary" onClick={handleSave}>Next step</button>
+          <button className="btn btn-outline-primary" onClick={addStep}>Next step</button>
         </Col>
       </Row>
 
       <Row className="mt-4">
         <Col className="col-7">
-          <label className="form-Label">Image Url: </label>
-          <input className="form-control" type="file"  onChange={(e) => setFormData((prevFormData) => ({...prevFormData, ImageUrl: e.target.value}))} />
+          <label className="form-Label">Image: </label>
+          <input className="form-control" type="file"  onChange={handleImageChange} />
         </Col>
         <Col>
           <label className="form-Label">Category: </label>
           {/* <input className="form-control" type="text" value={formData.CategoryID} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, CategoryID: e.target.value}))} /> */}
-          <select className="form-select" value={formData.CategoryID} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, CategoryID: e.target.value}))} >
+          <select className="form-select" value={categoryID} onChange={(e) => setCategoryID(e.target.value)} >
           <option value="">Select an option...</option>
   {categories.map((category) => (
     <option key={category.categoryID} value={category.categoryID}>
@@ -296,7 +356,7 @@ const Feed = () => {
 
       <Row>
         <Col>
-         <input className="form-control" type="text" value={formData.UserID} hidden />
+         <input className="form-control" type="text" value={userID} hidden />
         </Col>
       </Row>
 

@@ -3,6 +3,7 @@ import { Navbar, Nav, Container, NavDropdown, Form, Button } from 'react-bootstr
 import { useSelector, useDispatch } from 'react-redux';
 import { clearProfilePicture, clearRole, clearToken, clearUserID, clearUsername } from "../Store/TokenStore";
 import { useNavigate } from 'react-router-dom';
+import './Navbar.css';
 
 // Navbar for navigation
 function AppNavbar() {
@@ -22,9 +23,7 @@ function AppNavbar() {
   };
 
   return (
-    
-    
-    <Navbar bg="dark" variant="dark" expand="lg">
+      <Navbar bg="dark" variant="dark" expand="lg" className='nav'>
   <Container fluid>
     <Navbar.Brand href="/">Food Pulse</Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -66,7 +65,6 @@ function AppNavbar() {
     </Navbar.Collapse>
   </Container>
 </Navbar>
-
   );
 }
 
