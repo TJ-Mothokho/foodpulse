@@ -24,6 +24,7 @@ const Feed = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [categories, setCategories] = useState([]);
+  const [search, setSearch] = useState('');
 
   const [steps, setSteps] = useState(['']);
 
@@ -48,7 +49,6 @@ const Feed = () => {
     e.preventDefault(); // Prevent the default form submission behavior
   
     const allSteps = steps.join('\n');
-    alert(allSteps);
     // Ensure `UserID` and `CategoryID` are properly set
     const formData = new FormData();
     formData.append("title", title);
@@ -56,27 +56,6 @@ const Feed = () => {
     formData.append("userID", userID);
     formData.append("categoryID", categoryID);
     formData.append("image", image);
-      
-
-      alert();
-      
-      
-      
-      
-      
-      // Title: formData.Title,
-      // Instructions: allSteps,
-      // Image: image,
-      // UserID: userID, // Fetch UserID from state
-      // CategoryID: formData.CategoryID // Make sure this is set correctly
-      // //Hashtags: ['munching'], // Note: match case with API expectation
-    
-
-
-  
-    // Log data for debugging
-    console.log('data:');
-    console.log(formData);
 
     axios.post('https://localhost:7297/api/Recipes/Add', formData)
             .then((result) => toast.success("added"))
@@ -113,6 +92,7 @@ const Feed = () => {
     try {
       const response = await apiClient.get(apiEndpoints.viewRecipes);
       setRecipes(response.data);
+      console.log(response.data);
     } catch (error) {
       toast.error("Failed to load recipes");
       console.error(error);
@@ -194,7 +174,6 @@ const Feed = () => {
     const newSteps = [...steps];
     newSteps[index] = value;
     setSteps(newSteps);
-    console.log(index, value);
   }
 
   const handleClear = () => {
@@ -217,8 +196,8 @@ const Feed = () => {
           <div className="side-bar">
             <Card style={{ width: "auto" }} className="mt-3">
               <Card.Body>
-                ProfilePicture goes here
-                <Card.Title>@{username}</Card.Title>
+                
+                <Card.Title><a href="#" className="text-decoration-none"><img src={profilePicture} alt="profile" className="profile-icon" /> @{username}</a></Card.Title>
                 0 Following  0 Followers
                 <div className="Sidebar-Nav">
                   <ul>
@@ -244,8 +223,8 @@ const Feed = () => {
             </Card>
           </div>
         </Col>
-  
-        <Col className="col-9">
+
+        <Col className="col-6">
           <div className="main-section">
             <h1>Feed</h1>
             <Button variant="primary" onClick={handleShow}>
@@ -262,36 +241,26 @@ const Feed = () => {
                   return (
                     <Card style={{ width: "auto" }} className="mt-3" key={index}>
                       <Card.Body>
-                        <Card.Title>{item.title}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted"><a href='{handleProfile}' className="text-decoration-none">@{item.userName}</a></Card.Subtitle>
-                        <Card.Text>{item.instructions}</Card.Text>
-    
+                        <Card.Title><a href='{handleProfile}' className="text-decoration-none"><img src={item.profilePicture} alt="profilePicture" className="profile-icon"/>@{item.userName}</a></Card.Title>
+                        <hr/>
+                        <Card.Subtitle className="mb-2 text-muted">{item.title}</Card.Subtitle>
+                        <img src={item.image} alt="recipeImage" style={{width:"400px"}} className="food-image" />
+                        <Row className="mt-3">
+                          <hr/>
+                          <Col>
                         {userID && (
                           isLiked ? (
-                            <Button
-                              className="btn btn-primary mx-1"
-                              onClick={() => handleRemoveLike(item.recipeID)}
-                            >
-                              <img className="mx-2" src={LikedButton} alt="liked button" />
-                              {likeCountForRecipe}
-                            </Button>
+                            <Button className="btn btn-primary mx-1" onClick={() => handleRemoveLike(item.recipeID)}> <img className="mx-2" src={LikedButton} alt="liked button" /> {likeCountForRecipe} </Button>
                           ) : (
-                            <Button
-                              className="btn btn-primary mx-1"
-                              onClick={() => handleLike(item.recipeID)}
-                            >
-                              <img className="mx-2" src={LikeButton} alt="like button" />
-                              {likeCountForRecipe}
-                            </Button>
+                            <Button className="btn btn-primary mx-1" onClick={() => handleLike(item.recipeID)}> <img className="mx-2" src={LikeButton} alt="like button" /> {likeCountForRecipe} </Button>
                           )
                         )}
     
-                        <Button
-                          className="btn btn-primary mx-1"
-                          onClick={() => console.log("Comment button clicked")}
-                        >
-                          <img className="mx-2" src={CommentButton} alt="comment button" /> 1
-                        </Button>
+                        {/* <Button className="btn btn-primary mx-1" onClick={() => console.log("Comment button clicked")} > */}
+                          <a href={handleClear}> <img className="mx-2" src={CommentButton} alt="comment button" /> 1 </a>
+                        {/* </Button> */}
+                        </Col>
+                        </Row>
                       </Card.Body>
                     </Card>
                   );
@@ -301,6 +270,18 @@ const Feed = () => {
               )}
             </div>
           </div>
+        </Col>
+
+        <Col className="col-3">
+            <div className="search-bar">
+            <Card style={{ width: "auto" }} className="mt-3">
+              <Card.Body>
+                <Card.Title>Search</Card.Title>
+                <input className="form-control" placeholder="@..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <Card.Title className="mt-3">Trending</Card.Title>
+              </Card.Body>
+            </Card>
+            </div>
         </Col>
       </Row>
 

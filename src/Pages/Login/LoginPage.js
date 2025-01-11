@@ -36,7 +36,7 @@ const Login = () =>
     const handleLogin = async (event) =>
     {
         event.preventDefault();
-        const url = 'https://localhost:7297/api/Auth/Login'
+        //const url = 'https://localhost:7297/api/Auth/Login'
         const data = {
             "username": username,
             "password": password
