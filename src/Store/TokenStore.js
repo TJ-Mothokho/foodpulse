@@ -9,6 +9,11 @@ const authSlice = createSlice({
     username: localStorage.getItem('username') || '', 
     role: localStorage.getItem('role') || '', 
     profilePicture: localStorage.getItem('profilePicture') || '', 
+    website: localStorage.getItem('website') || '', 
+    bio: localStorage.getItem('bio') || '', 
+    email: localStorage.getItem('email') || '', 
+    isVerified: localStorage.getItem('isVerified') || '', 
+    createdAt: localStorage.getItem('createdAt') || '', 
   },
   reducers: {
     setToken: (state, action) => {
@@ -51,11 +56,51 @@ const authSlice = createSlice({
       state.profilePicture = '';
       localStorage.removeItem('profilePicture'); // Remove profilepicture from localStorage
     },
+    setWebsite: (state, action) => {
+      state.website = action.payload;
+      localStorage.setItem('website', action.payload); // Save website to localStorage
+    },
+    clearWebsite: (state) => {
+      state.website = '';
+      localStorage.removeItem('website'); // Remove website from localStorage
+    },
+    setBio: (state, action) => {
+      state.bio = action.payload;
+      localStorage.setItem('bio', action.payload); // Save bio to localStorage
+    },
+    clearBio: (state) => {
+      state.bio = '';
+      localStorage.removeItem('bio'); // Remove bio from localStorage
+    },
+    setEmail: (state, action) => {
+      state.email = action.payload;
+      localStorage.setItem('email', action.payload); // Save email to localStorage
+    },
+    clearEmail: (state) => {
+      state.email = '';
+      localStorage.removeItem('email'); // Remove email from localStorage
+    },
+    setIsVerified: (state, action) => {
+      state.isVerified = action.payload;
+      localStorage.setItem('isVerified', action.payload); // Save isVerified to localStorage
+    },
+    clearIsVerified: (state) => {
+      state.isVerified = '';
+      localStorage.removeItem('isVerified'); // Remove isVerified from localStorage
+    },
+    setCreatedAt: (state, action) => {
+      state.createdAt = action.payload;
+      localStorage.setItem('createdAt', action.payload); // Save createdAt to localStorage
+    },
+    clearCreatedAt: (state) => {
+      state.createdAt = '';
+      localStorage.removeItem('createdAt'); // Remove createdAt from localStorage
+    },
   },
 });
 
 // Export the actions
-export const { setToken, clearToken, setUserID, clearUserID, setUsername, clearUsername, setRole, clearRole, setProfilePicture, clearProfilePicture } = authSlice.actions;
+export const { setToken, clearToken, setUserID, clearUserID, setUsername, clearUsername, setRole, clearRole, setProfilePicture, clearProfilePicture, setBio, clearBio, setEmail, clearEmail, setWebsite, clearWebsite, setCreatedAt, clearCreatedAt, setIsVerified, clearIsVerified } = authSlice.actions;
 
 // Create and export the store
 const store = configureStore({

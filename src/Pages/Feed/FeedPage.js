@@ -144,8 +144,9 @@ const Feed = () => {
     navigate('/LikedPosts/' + userID)
   }
 
-  const handleProfile = async => {
-    navigate('/' + userID)
+  const handleProfile = (id) => {
+    navigate(`/Profile/${id}`)
+    
   }
 
   const getRecipeLikeCount = (recipeID) => {
@@ -197,7 +198,9 @@ const Feed = () => {
             <Card style={{ width: "auto" }} className="mt-3">
               <Card.Body>
                 
-                <Card.Title><a href="#" className="text-decoration-none"><img src={profilePicture} alt="profile" className="profile-icon" /> @{username}</a></Card.Title>
+                <Card.Title><a href="#" onClick={(e) => {
+          e.preventDefault(); // Prevent default anchor behavior
+          handleProfile(userID); }} className="text-decoration-none"><img src={profilePicture} alt="profile" className="profile-icon" /> @{username}</a></Card.Title>
                 0 Following  0 Followers
                 <div className="Sidebar-Nav">
                   <ul>
@@ -241,7 +244,11 @@ const Feed = () => {
                   return (
                     <Card style={{ width: "auto" }} className="mt-3" key={index}>
                       <Card.Body>
-                        <Card.Title><a href='{handleProfile}' className="text-decoration-none"><img src={item.profilePicture} alt="profilePicture" className="profile-icon"/>@{item.userName}</a></Card.Title>
+                        <Card.Title><a href="#" onClick={(e) => {
+          e.preventDefault(); // Prevent default anchor behavior
+          handleProfile(item.userID);
+        }}
+ className="text-decoration-none"><img src={item.profilePicture} alt="profilePicture" className="profile-icon"/>@{item.userName}</a></Card.Title>
                         <hr/>
                         <Card.Subtitle className="mb-2 text-muted">{item.title}</Card.Subtitle>
                         <img src={item.image} alt="recipeImage" style={{width:"400px"}} className="food-image" />

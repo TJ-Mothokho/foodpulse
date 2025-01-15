@@ -29,6 +29,7 @@ apiClient.interceptors.request.use(
 export const apiEndpoints = {
     // Users
     login: '/Auth/Login',
+    getUserByID: '/Users/Get/',
 
     //Recipes
     viewRecipes: '/Recipes/GetAll',
