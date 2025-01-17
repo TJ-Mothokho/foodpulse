@@ -19,7 +19,6 @@ function App() {
 
   return (  
         <Router>
-          <AppNavbar/>
           <Routes>
               {/* Define routes */}
               <Route path="/Login" element={<Login />} /> 

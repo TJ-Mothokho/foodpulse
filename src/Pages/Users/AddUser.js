@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { Col, Container, Row } from "react-bootstrap";
 import addIcon from '../../Components/Images/plus-circle.svg'
+import { useNavigate } from "react-router-dom";
 
 const AddUser = () =>
 {
@@ -13,6 +14,8 @@ const AddUser = () =>
     const [website, setWebsite] = useState("");
     const [bio, setBio] = useState("");
     const [profilePicture, setProfilePicture] = useState(null);
+
+    const navigate = useNavigate();
 
     const data = {
         "username": username,
@@ -58,7 +61,7 @@ const AddUser = () =>
                 <Row>
                     <Col>
                         <label className="form-label">Username:</label>
-                        <input className="form-control" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+                        <input className="form-control" type="text" value={username} autoComplete="off" autoCorrect="false" onChange={(e) => setUsername(e.target.value)} />
                     </Col>
 
                     <Col>
@@ -97,9 +100,12 @@ const AddUser = () =>
                         <input className="form-control" type="file" onChange={handleImageChange} />
                     </Col>
                 </Row>
-                <Row>
+                <Row className="mt-3">
                     <Col>
                         <button className="btn btn-primary" onClick={handleSave}><img src={addIcon} alt='add button' /> Add</button>
+                    </Col>
+                    <Col>
+                        <button className="btn btn-primary" onClick={() => navigate('/')}> Back </button>
                     </Col>
                 </Row>
             </form>

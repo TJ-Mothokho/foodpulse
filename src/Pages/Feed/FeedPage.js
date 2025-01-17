@@ -103,13 +103,10 @@ const Feed = () => {
 
   useEffect(() => {
     getCategories();
-    if (userID == null || userID === "") {
-      navigate("/login");
-    } else {
       getRecipes();
       getLikesCount();
       getLikes();
-    }
+    
 
     const cachedUsers = localStorage.getItem('users');
     if (cachedUsers) {
@@ -280,7 +277,9 @@ const handleQuery = (e) => {
       <Row>
         <Col className="col-3">
           <div className="side-bar">
-            <Card style={{ width: "auto" }} className="mt-3">
+            {
+              userID ? (
+                <Card style={{ width: "auto" }} className="mt-3">
               <Card.Body>
 
                 <Card.Title><a href="#" onClick={(e) => {
@@ -309,15 +308,42 @@ const handleQuery = (e) => {
                 </div>
               </Card.Body>
             </Card>
+              ) : (
+                <Card style={{ width: "auto" }} className="mt-3">
+              <Card.Body>
+
+                <Card.Title>Oops!</Card.Title>
+                <div className="mb-3">It seems like you're not logged in!</div>
+                Log In or Sign up to post those delicious recipes
+                <div className="Sidebar-Nav">
+                  <ul>
+                      <div className="">
+                          <Row className="mt-1">
+                            <button className="btn btn-outline-primary mx-3 block" onClick={() => navigate('/login')} > Log In </button>
+                          </Row>
+
+                          <Row className="mt-1">
+                            <button className="btn btn-primary mx-3 block" onClick={() => navigate('/register')} > Sign Up </button>
+                          </Row>
+                          </div>
+                  </ul>
+                </div>
+              </Card.Body>
+            </Card>
+              )
+            }
           </div>
         </Col>
 
         <Col className="col-6">
           <div className="main-section">
-            <h1>Feed</h1>
+            <div className="heading">
+            <h1>Food Pulse</h1>
+            <hr/>
             <Button variant="primary" onClick={handleShow}>
               <img src={addIcon} alt="Add" /> Add Recipe
             </Button>
+            </div>
             <div>
               {recipes && recipes.length > 0 ? (
                 recipes.map((item, index) => {
