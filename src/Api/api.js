@@ -30,6 +30,7 @@ export const apiEndpoints = {
     // Users
     login: '/Auth/Login',
     getUserByID: '/Users/Get/',
+    getUsers: '/Users/GetAll',
 
     //Recipes
     viewRecipes: '/Recipes/GetAll',

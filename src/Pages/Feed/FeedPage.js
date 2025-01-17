@@ -24,7 +24,11 @@ const Feed = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [categories, setCategories] = useState([]);
-  const [search, setSearch] = useState('');
+
+  const [query, setQuery] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [users, setUsers] = useState([{"userID":"3ceab3d4-d534-4f97-06f6-08dd2ded25d4","username":"rafxjayyy"}]);
+  const [data, setData] = useState([]);
 
   const [steps, setSteps] = useState(['']);
 
@@ -33,21 +37,41 @@ const Feed = () => {
   const [categoryID, setCategoryID] = useState('');
   const [image, setImage] = useState(null);
 
-  const dispatch = useDispatch();
+  //test
+  // const demoData = [
+  //   {
+  //     'name':'jay',
+  //   'surname':'mothokho'
+  //   },
+  //   {
+  //     'name':'ray',
+  //   'surname':'brown'
+  //   }
+  // ]
+
   
+  // const testString = JSON.stringify(demoData);
+  //  localStorage.setItem('demo', JSON.stringify(testString));
+  //  const testStringg = localStorage.getItem('demo');
+  // console.log('test: ' + testStringg);
+
+  //test ends
+
+  const dispatch = useDispatch();
+
     const handleLogout = () => {
       dispatch(clearToken()); // Clear the token on logout
-      dispatch(clearUserID()); 
-      dispatch(clearUsername()); 
-      dispatch(clearRole()); 
-      dispatch(clearProfilePicture()); 
+      dispatch(clearUserID());
+      dispatch(clearUsername());
+      dispatch(clearRole());
+      dispatch(clearProfilePicture());
       navigate('/login')
     };
-  
+
 
   const handleSave = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
-  
+
     const allSteps = steps.join('\n');
     // Ensure `UserID` and `CategoryID` are properly set
     const formData = new FormData();
@@ -61,7 +85,7 @@ const Feed = () => {
             .then((result) => toast.success("added"))
             .catch((error) => toast.error(error))
             navigate('/');
-  
+
     // Send POST request
     // try {
     //   const response = apiClient.post(apiEndpoints.addRecipe, formData);
@@ -86,13 +110,21 @@ const Feed = () => {
       getLikesCount();
       getLikes();
     }
+
+    const cachedUsers = localStorage.getItem('users');
+    if (cachedUsers) {
+      console.log('cache: ' + cachedUsers);
+      setUsers(JSON.parse(cachedUsers));
+    } else {
+      getUsers();
+    }
+
   }, []);
 
   const getRecipes = async () => {
     try {
       const response = await apiClient.get(apiEndpoints.viewRecipes);
       setRecipes(response.data);
-      console.log(response.data);
     } catch (error) {
       toast.error("Failed to load recipes");
       console.error(error);
@@ -146,7 +178,7 @@ const Feed = () => {
 
   const handleProfile = (id) => {
     navigate(`/Profile/${id}`)
-    
+
   }
 
   const getRecipeLikeCount = (recipeID) => {
@@ -183,11 +215,64 @@ const Feed = () => {
     setCategoryID('');
     setInstructions('');
     setSteps([]);
-    
+
   }
 
   const handleImageChange = (event) => {
     setImage(event.target.files[0]);
+};
+
+const getUsers = () => {
+   axios.get('https://localhost:7297/api/Users/GetUsernames')
+        .then((result) =>
+        {setUsers(result.data);
+          console.log(result.data);
+          const userData = JSON.stringify(result.data);
+          console.log('getUsers: ' + userData);
+           localStorage.setItem('users', JSON.stringify(userData));
+           console.log('Done: ' + localStorage.getItem('users'));
+        })
+        .catch((error) =>
+        {console.log(error)})
+
+  // const fetchedUsers = [
+  //   { username: 'Alice', email: 'alice@example.com' },
+  //   { username: 'Bob', email: 'bob@example.com' },
+  //   { username: 'Amanda', email: 'amanda@example.com' },
+  //   { username: 'Aaron', email: 'aaron@example.com' },
+  // ];
+  // return fetchedUsers;
+};
+
+const handleSearch = async (e) =>{
+  if(e !== undefined)
+  {
+    e.preventDefault();
+  }
+  getUsers();
+  // localStorage.setItem('users', JSON.stringify(users));
+}
+
+const handleQuery = (e) => {
+  const value = e.target.value;
+  setQuery(value);
+
+  console.log('query: ' + value);
+  console.log('users: ' + users);
+  console.log('storage: ' + localStorage.getItem('users'));
+  
+
+  // Filter suggestions based on input
+  try{
+    const filtered = users.filter(user =>
+      user.username.startsWith(value.toLowerCase())
+    );
+    setSuggestions(filtered);
+  }
+  catch{
+    handleSearch()
+  }
+  
 };
 
   return (
@@ -197,7 +282,7 @@ const Feed = () => {
           <div className="side-bar">
             <Card style={{ width: "auto" }} className="mt-3">
               <Card.Body>
-                
+
                 <Card.Title><a href="#" onClick={(e) => {
           e.preventDefault(); // Prevent default anchor behavior
           handleProfile(userID); }} className="text-decoration-none"><img src={profilePicture} alt="profile" className="profile-icon" /> @{username}</a></Card.Title>
@@ -205,7 +290,7 @@ const Feed = () => {
                 <div className="Sidebar-Nav">
                   <ul>
                     {
-                      username ? 
+                      username ?
                       (<div className="">
                           <Row className="mt-1">
                             <button className="btn btn-outline-secondary mx-3 block" onClick={handleProfile} > Profile </button>
@@ -240,7 +325,7 @@ const Feed = () => {
                     (like) => like.recipeID === item.recipeID && like.isLiked
                   );
                   const likeCountForRecipe = getRecipeLikeCount(item.recipeID);
-    
+
                   return (
                     <Card style={{ width: "auto" }} className="mt-3" key={index}>
                       <Card.Body>
@@ -262,7 +347,7 @@ const Feed = () => {
                             <Button className="btn btn-primary mx-1" onClick={() => handleLike(item.recipeID)}> <img className="mx-2" src={LikeButton} alt="like button" /> {likeCountForRecipe} </Button>
                           )
                         )}
-    
+
                         {/* <Button className="btn btn-primary mx-1" onClick={() => console.log("Comment button clicked")} > */}
                           <a href={handleClear}> <img className="mx-2" src={CommentButton} alt="comment button" /> 1 </a>
                         {/* </Button> */}
@@ -284,7 +369,26 @@ const Feed = () => {
             <Card style={{ width: "auto" }} className="mt-3">
               <Card.Body>
                 <Card.Title>Search</Card.Title>
-                <input className="form-control" placeholder="@..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <Form>
+                  <Row>
+                    <Col className="col-8">
+                <input className="form-control" placeholder="@..." type="text" value={query} onChange={handleQuery} />
+                </Col>
+                <Col>
+                <button className="btn btn-primary" onClick={handleSearch}>Search</button>
+                </Col>
+                </Row>
+                {query && suggestions.length > 0 && (
+        <ul>
+          {suggestions.map((user, index) => (
+            <li key={index}>
+              {user.username}
+            </li>
+          ))}
+        </ul>
+      )}
+      {query && suggestions.length === 0 && <p>No users found.</p>}
+      </Form>
                 <Card.Title className="mt-3">Trending</Card.Title>
               </Card.Body>
             </Card>
@@ -316,7 +420,7 @@ const Feed = () => {
           ))}
         </Col>
       </Row>
-      
+
       <Row className="mt-1">
         <Col>
           <button className="btn btn-outline-primary" onClick={addStep}>Next step</button>
@@ -348,7 +452,7 @@ const Feed = () => {
         </Col>
       </Row>
 
-      
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
