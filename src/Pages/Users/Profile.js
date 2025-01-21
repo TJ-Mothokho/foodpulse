@@ -23,13 +23,17 @@ const Profile = () => {
       {console.log(error)})
     }
 
-    useEffect(async () => {
+    useEffect(() => {
+       const fetchData = async () => {
         await getUserDetail(userID);
         console.log('effect: ' + userID);
+       };
+
+       fetchData();
       }, []);
 
     return(
-        <div>Hello: </div>
+        <div>Hello: {data.username}</div>
     );
 }
 
