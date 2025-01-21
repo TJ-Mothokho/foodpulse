@@ -8,12 +8,13 @@ import axios from "axios";
 
 const Profile = () => {
     const storeUserID = useSelector((state) => state.auth.userID);
+    const url = localStorage.getItem('apiUrl')
     const [data, setData] = useState();
 
     const {userID} = useParams();
 
-    const getUserDetail = (id) => {
-      axios.get('https://localhost:7297/api/Users/Get/' + id)
+    const getUserDetail = async (id) => {
+      await axios.get(url + '/Users/Get/' + id)
       .then((result) => 
       {setData(result.data);
         console.log(result.data);
@@ -22,13 +23,13 @@ const Profile = () => {
       {console.log(error)})
     }
 
-    useEffect(() => {
-        getUserDetail(userID);
+    useEffect(async () => {
+        await getUserDetail(userID);
         console.log('effect: ' + userID);
       }, []);
 
     return(
-        <div>Hello: {data.username}</div>
+        <div>Hello: </div>
     );
 }
 
