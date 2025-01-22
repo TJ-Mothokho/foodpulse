@@ -25,13 +25,39 @@ const RegisterUser = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        handleShowUsername();
-      }, []);
+        handleShowDOB();
+    }, []);
+
+    const handleImageChange = (event) => {
+        setProfilePicture(event.target.files[0]);
+    };
 
     const handleCancel = () => {
         navigate('/');
     }
 
+    const handleClose = () => {
+        setShowUsername(false);
+        setShowEmail(false);
+        setShowDOB(false);
+        setShowBio(false);
+        setShowPassword(false);
+        setShowWebsite(false);
+        setShowProfilePicture(false);
+
+        handleClear();
+        handleCancel();
+    };
+
+    const handleClear = () => {
+        setUsername('');
+        setPassword('');
+        setEmail('');
+        setBio('');
+        setWebsite('');
+        setDateOfBirth('');
+        setProfilePicture(null);
+    }
 
     //Username
     const handleShowUsername = () => {
@@ -40,18 +66,12 @@ const RegisterUser = () => {
 
     const handleUsername_next = () => {
         setShowUsername(false);
-        setShowEmail(true);
+        handleShowEmail();
     };
 
     const handleUsername_back = () => {
         setShowUsername(false);
-        handleCancel();
-    };
-
-    const handleClose = () => {
-        setShowUsername(false);
-        setShowEmail(false);
-        handleCancel();
+        handleShowDOB();
     };
 
     //Email
@@ -61,37 +81,144 @@ const RegisterUser = () => {
 
     const handleEmail_next = () => {
         setShowEmail(false);
-        setShowPassword(true);
+        handleShowPassword();
     };
 
     const handleEmail_back = () => {
         setShowEmail(false);
-        setShowUsername(true);
+        handleShowUsername();
+    };
+
+    //Date of Birth
+    const handleShowDOB = () => {
+        setShowDOB(true);
+    };
+
+    const handleDOB_next = () => {
+        setShowDOB(false);
+        handleShowUsername();
+    };
+
+    const handleDOB_back = () => {
+        setShowDOB(false);
+        navigate('/');
+    };
+
+    //Password
+    const handleShowPassword = () => {
+        setShowPassword(true);
+    };
+
+    const handlePassword_next = () => {
+        setShowPassword(false);
+        handleShowWebsite();
+    };
+
+    const handlePassword_back = () => {
+        setShowPassword(false);
+        handleShowEmail();
+    };
+
+    //Website
+    const handleShowWebsite = () => {
+        setShowWebsite(true);
+    };
+
+    const handleWebsite_next = () => {
+        setShowWebsite(false);
+        handleShowProfilePicture();
+    };
+
+    const handleWebsite_back = () => {
+        setShowWebsite(false);
+        handleShowPassword();
+    };
+
+    //Profile Picture
+    const handleShowProfilePicture = () => {
+        setShowProfilePicture(true);
+    };
+
+    const handleProfilePicture_next = () => {
+        setShowProfilePicture(false);
+        handleShowBio();
+    };
+
+    const handleProfilePicture_back = () => {
+        setShowDOB(false);
+        handleShowWebsite();
+    };
+
+    //Bio
+    const handleShowBio = () => {
+        setShowBio(true);
+    };
+
+    const handleBio_next = () => {
+        setShowBio(false);
+        handleSave();
+    };
+
+    const handleBio_back = () => {
+        setShowBio(false);
+        handleShowProfilePicture();
+    };
+
+    //Saving Data
+    const handleSave = () => {
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("password", password);
+        formData.append("email", email);
+        formData.append("dateOfBirth", dateOfBirth);
+        formData.append("website", website);
+        formData.append("bio", bio);
+        formData.append("profilePicture", profilePicture);
+
+        const url = localStorage.getItem('apiUrl');
+        axios.post(url + '/Users/Add', formData)
+        .then((result) => toast.success("Account Created Successfully"))
+        .catch((error) => toast.error(error))
+
+        navigate('/login');
     };
 
     return(
         <div>
+            {/* Date of Birth */}
+            <Modal show={showDOB} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>How old are you?</Modal.Title>
+                </Modal.Header>
+                <Form>
+                    <Modal.Body>
+                        <Row className="">
+                            <Col>
+                                <label className="form-Label">Date of Birth: </label>
+                                <input className="form-control" type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
+                            </Col>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleDOB_back}>Back</Button>
+                        <Button variant="primary" onClick={handleDOB_next}>Next</Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+
+            {/* Username */}
             <Modal show={showUsername} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>What should we call you?</Modal.Title>
                 </Modal.Header>
                 <Form>
                     <Modal.Body>
-                        <Row className="mt-4">
+                        <Row className="">
                             <Col>
                                 <label className="form-Label">Username: </label>
-                                <input className="form-control" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                <input className="form-control" type="text" value={username} placeholder='@...' onChange={(e) => setUsername(e.target.value)} />
                             </Col>
                         </Row>
-
-                        {/* <Row className="mt-4">
-                            <Col className="col-7">
-                            <label className="form-Label">Image: </label>
-                            <input className="form-control" type="file"  onChange={handleImageChange} />
-                            </Col>
-                        </Row> */}
-
-
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleUsername_back}>Back</Button>
@@ -113,19 +240,94 @@ const RegisterUser = () => {
                                 <input className="form-control" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                             </Col>
                         </Row>
-
-                        {/* <Row className="mt-4">
-                            <Col className="col-7">
-                            <label className="form-Label">Image: </label>
-                            <input className="form-control" type="file"  onChange={handleImageChange} />
-                            </Col>
-                        </Row> */}
-
-
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleEmail_back}>Back</Button>
                         <Button variant="primary" onClick={handleEmail_next}>Next</Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+
+            {/* Password */}
+            <Modal show={showPassword} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Create a strong Password.</Modal.Title>
+                </Modal.Header>
+                <Form>
+                    <Modal.Body>
+                        <Row className="mt-4">
+                            <Col>
+                                <label className="form-Label">Password: </label>
+                                <input className="form-control" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                            </Col>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handlePassword_back}>Back</Button>
+                        <Button variant="primary" onClick={handlePassword_next}>Next</Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+
+            {/* Website */}
+            <Modal show={showWebsite} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Do you have a website?</Modal.Title>
+                </Modal.Header>
+                <Form>
+                    <Modal.Body>
+                        <Row className="mt-4">
+                            <Col>
+                                <label className="form-Label">Website Url: </label>
+                                <input className="form-control" type="text" value={website} onChange={(e) => setWebsite(e.target.value)} />
+                            </Col>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleWebsite_back}>Back</Button>
+                        <Button variant="primary" onClick={handleWebsite_next}>Next</Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+
+            {/* Profile Pricture */}
+            <Modal show={showProfilePicture} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Upload your profile Picture?</Modal.Title>
+                </Modal.Header>
+                <Form>
+                    <Modal.Body>
+                        <Row>
+                            <Col>
+                                <label className="form-Label">Image: </label>
+                                <input className="form-control" type="file"  onChange={handleImageChange} />
+                            </Col>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleProfilePicture_back}>Back</Button>
+                        <Button variant="primary" onClick={handleProfilePicture_next}>Next</Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+
+            {/* Bio */}
+            <Modal show={showBio} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Describe yourself.</Modal.Title>
+                </Modal.Header>
+                <Form>
+                    <Modal.Body>
+                        <Row>
+                            <Col>
+                                <label className="form-Label">Bio: </label>
+                                <input className="form-control" type="text" value={bio} onChange={(e) => setBio(e.target.value)} />
+                            </Col>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleBio_back}>Back</Button>
+                        <Button variant="primary" onClick={handleBio_next}>Next</Button>
                     </Modal.Footer>
                 </Form>
             </Modal>
