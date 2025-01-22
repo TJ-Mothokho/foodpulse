@@ -1,0 +1,16 @@
+.header-image{
+    background-color: blue;
+    height:100px;
+    margin-bottom: 20px;
+}
+
+.member{
+    margin-top: -20px;
+}
+
+.profile-image{
+    border-radius: 100px;
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+}

@@ -2,14 +2,19 @@ import React, {useState, useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import apiClient, { apiEndpoints } from "../../Api/api";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { clearProfilePicture, clearRole, clearToken, clearUserID, clearUsername } from "../../Store/TokenStore";
 import axios from "axios";
+import { Button, Card, Modal, Row, Col, Form, Container } from "react-bootstrap";
+import './User.css';
 
 const Profile = () => {
     const storeUserID = useSelector((state) => state.auth.userID);
-    const url = localStorage.getItem('apiUrl')
+    const url = localStorage.getItem('apiUrl');
     const [data, setData] = useState();
+    const [recipes, setRecipes] = useState([]);
+    const [likes, setLikes] = useState([]);
+    const [likeCount, setLikeCount] = useState([]);
 
     const {userID} = useParams();
 
@@ -23,17 +28,148 @@ const Profile = () => {
       {console.log(error)})
     }
 
+    const getRecipesByUserID = async (id) => {
+      await axios.get(url + '/Recipes/user/' + id)
+      .then((result) => {setRecipes(result.data)})
+      .catch((error) => {console.log(error)})
+    };
+
     useEffect(() => {
        const fetchData = async () => {
         await getUserDetail(userID);
+        await getRecipesByUserID(userID);
+        await getLikesCount();
+        await getLikes();
         console.log('effect: ' + userID);
+
        };
 
        fetchData();
       }, []);
 
+      const getLikes = async () => {
+        try {
+          const response = await apiClient.post(apiEndpoints.getLikes + userID);
+          setLikes(response.data);
+        } catch (error) {
+          toast.error("Failed to load likes");
+          console.error(error);
+        }
+      };
+    
+      const getLikesCount = async () => {
+        try {
+          const response = await apiClient.get(apiEndpoints.getLikesCount);
+          setLikeCount(response.data);
+        } catch (error) {
+          toast.error("Failed to load like count");
+        }
+      };
+    
+      const handleLike = async (recipeID) => {
+        try {
+          await apiClient.post(apiEndpoints.like + `userID=${userID}&recipeID=${recipeID}`);
+          setLikes((prevLikes) => [...prevLikes, { recipeID, isLiked: true }]);
+        } catch (error) {
+          toast.error("Failed to like");
+          console.error(error);
+        }
+      };
+    
+      const handleRemoveLike = async (recipeID) => {
+        try {
+          await apiClient.post(apiEndpoints.removeLike + `userID=${userID}&recipeID=${recipeID}`);
+          setLikes((prevLikes) =>
+            prevLikes.filter((like) => like.recipeID !== recipeID || !like.isLiked)
+          );
+        } catch (error) {
+          toast.error("Failed to remove like");
+          console.error(error);
+        }
+      };
+
+      const getRecipeLikeCount = (recipeID) => {
+        const countItem = likeCount.find((count) => count.recipeID === recipeID);
+        return countItem ? countItem.likeCount : 0; // Return 0 if no match
+      };
+
+      const handleDemo = () => {
+        const num = 1;
+      };
+
+      const navigate = useNavigate();
+
+      const handleProfile = (id) => {
+        navigate(`/Profile/${id}`)
+    
+      }
+
     return(
-        <div>Hello: {data.username}</div>
+        <Container className="mt-3">
+          {
+            data ? (
+              <div>
+                <Card style={{ width: "auto" }} className="mt-3">
+                  <Card.Body>
+                    <Card.Title><img src={data.profilePicture} alt="Profile-Picture" className="profile-image"/> @{data.username}</Card.Title>
+                    <Card.Subtitle className="mb-2 mt-2 text-muted">{data.bio}</Card.Subtitle>
+                    <Card.Text><a href={data.website}>{data.website}</a></Card.Text>
+                    <Card.Text className="member">Member since: {data.createdAt}</Card.Text>
+                  </Card.Body>
+                </Card>
+
+                <hr/>
+
+                <div>
+                {recipes && recipes.length > 0 ? (
+                recipes.map((item, index) => {
+                  const isLiked = likes.some(
+                    (like) => like.recipeID === item.recipeID && like.isLiked
+                  );
+                  const likeCountForRecipe = getRecipeLikeCount(item.recipeID);
+
+                  return (
+                    <Card style={{ width: "auto" }} className="mt-3" key={index}>
+                      <Card.Body>
+                        <Card.Title><a href="#" onClick={(e) => {
+          e.preventDefault(); // Prevent default anchor behavior
+          handleProfile(item.userID);
+        }}
+ className="text-decoration-none"><img src={item.profilePicture} alt="profilePicture" className="profile-icon"/>@{item.userName}</a></Card.Title>
+                        <hr/>
+                        <Card.Subtitle className="mb-2 text-muted">{item.title}</Card.Subtitle>
+                        <img src={item.image} alt="recipeImage" style={{width:"400px"}} className="food-image" />
+                        <Row className="mt-3">
+                          <hr/>
+                          <Col>
+                        {userID && (
+                          isLiked ? (
+                            <Button className="btn btn-primary mx-1" onClick={() => handleRemoveLike(item.recipeID)}> <img className="mx-2" src={handleDemo} alt="liked button" /> {likeCountForRecipe} </Button>
+                          ) : (
+                            <Button className="btn btn-primary mx-1" onClick={() => handleLike(item.recipeID)}> <img className="mx-2" src={handleDemo} alt="like button" /> {likeCountForRecipe} </Button>
+                          )
+                        )}
+
+                        {/* <Button className="btn btn-primary mx-1" onClick={() => console.log("Comment button clicked")} > */}
+                          <a href={handleDemo}> <img className="mx-2" src={handleDemo} alt="comment button" /> 1 </a>
+                        {/* </Button> */}
+                        </Col>
+                        </Row>
+                      </Card.Body>
+                    </Card>
+                  );
+                })
+              ) : (
+                <p>Loading...</p>
+              )}
+                </div>
+                
+              </div>
+              ) 
+            : 
+            (<p>loading</p>)
+          }
+        </Container>
     );
 }
 
