@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 const UsersList = () =>
 {
     const [data, setData] = useState('');
-
+    const url = localStorage.getItem('apiUrl');
     const navigate = useNavigate();
 
     useEffect(() =>
@@ -17,7 +17,7 @@ const UsersList = () =>
     
     const getUsers = () =>
     {
-        axios.get('https://localhost:7297/api/Users/GetAll',{
+        axios.get(url + '/Users/GetAll',{
             headers:{
                 // Authorization: `Bearer ${}`
             }

@@ -36,6 +36,7 @@ const Feed = () => {
   const [instructions, setInstructions] = useState('');
   const [categoryID, setCategoryID] = useState('');
   const [image, setImage] = useState(null);
+  const url = localStorage.getItem('apiUrl');
 
   //test
   // const demoData = [
@@ -81,7 +82,7 @@ const Feed = () => {
     formData.append("categoryID", categoryID);
     formData.append("image", image);
 
-    axios.post('https://localhost:7297/api/Recipes/Add', formData)
+    axios.post(url + '/Recipes/Add', formData)
             .then((result) => toast.success("added"))
             .catch((error) => toast.error(error))
             navigate('/');
@@ -220,7 +221,7 @@ const Feed = () => {
 };
 
 const getUsers = () => {
-   axios.get('https://localhost:7297/api/Users/GetUsernames')
+   axios.get(url + '/Users/GetUsernames')
         .then((result) =>
         {setUsers(result.data);
           console.log(result.data);

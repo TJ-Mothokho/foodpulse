@@ -4,7 +4,6 @@ import Login from './Pages/Login/LoginPage';
 import Profile from './Pages/Users/Profile';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AddUser from './Pages/Users/AddUser';
 import AppNavbar from './Components/Navbar';
 import UsersList from './Pages/Users/UsersList';
 import Register from './Pages/Users/Register';
