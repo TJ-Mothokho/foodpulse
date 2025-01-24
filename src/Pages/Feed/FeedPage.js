@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Button, Card, Modal, Row, Col, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import addIcon from "../../Components/Images/plus-circle.svg";
@@ -16,110 +16,36 @@ const Feed = () => {
   const [recipes, setRecipes] = useState([]);
   const [likes, setLikes] = useState([]);
   const [likeCount, setLikeCount] = useState([]);
+  const [show, setShow] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [steps, setSteps] = useState([""]);
+  const [title, setTitle] = useState("");
+  const [instructions, setInstructions] = useState("");
+  const [categoryID, setCategoryID] = useState("");
+  const [image, setImage] = useState(null);
+  const [users, setUsers] = useState([]);
+
   const userID = useSelector((state) => state.auth.userID);
   const username = useSelector((state) => state.auth.username);
   const profilePicture = useSelector((state) => state.auth.profilePicture);
+
   const navigate = useNavigate();
-  const [show, setShow] = useState(false);
+  const dispatch = useDispatch();
+  const url = localStorage.getItem("apiUrl");
+
+  const recipesRef = useRef(null); // Ref to avoid unnecessary re-renders when recipes are updated
+
+  // Handle modal visibility
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [categories, setCategories] = useState([]);
 
-  const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [users, setUsers] = useState([{"userID":"3ceab3d4-d534-4f97-06f6-08dd2ded25d4","username":"rafxjayyy"}]);
-  const [data, setData] = useState([]);
+  // Memoize computed values for performance optimization
+  const sortedRecipes = useMemo(() => recipes.slice().sort((a, b) => b.timestamp - a.timestamp), [recipes]);
 
-  const [steps, setSteps] = useState(['']);
-
-  const [title, setTitle] = useState('');
-  const [instructions, setInstructions] = useState('');
-  const [categoryID, setCategoryID] = useState('');
-  const [image, setImage] = useState(null);
-  const url = localStorage.getItem('apiUrl');
-
-  //test
-  // const demoData = [
-  //   {
-  //     'name':'jay',
-  //   'surname':'mothokho'
-  //   },
-  //   {
-  //     'name':'ray',
-  //   'surname':'brown'
-  //   }
-  // ]
-
-  
-  // const testString = JSON.stringify(demoData);
-  //  localStorage.setItem('demo', JSON.stringify(testString));
-  //  const testStringg = localStorage.getItem('demo');
-  // console.log('test: ' + testStringg);
-
-  //test ends
-
-  const dispatch = useDispatch();
-
-    const handleLogout = () => {
-      dispatch(clearToken()); // Clear the token on logout
-      dispatch(clearUserID());
-      dispatch(clearUsername());
-      dispatch(clearRole());
-      dispatch(clearProfilePicture());
-      navigate('/login')
-    };
-
-
-  const handleSave = async (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
-
-    const allSteps = steps.join('\n');
-    // Ensure `UserID` and `CategoryID` are properly set
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("instructions", allSteps);
-    formData.append("userID", userID);
-    formData.append("categoryID", categoryID);
-    formData.append("image", image);
-
-    axios.post(url + '/Recipes/Add', formData)
-            .then((result) => toast.success("added"))
-            .catch((error) => toast.error(error))
-            navigate('/');
-
-    // Send POST request
-    // try {
-    //   const response = apiClient.post(apiEndpoints.addRecipe, formData);
-    //   toast.success('Recipe added successfully!');
-    //   console.log(response.data);
-    //   navigate('/');
-    // } catch (error) {
-    //   console.error(error.response?.data || error.message);
-    //   toast.error('Failed to add recipe.');
-    // }
-
-    handleClear();
-    handleClose();
-  };
-
-  useEffect(() => {
-    getCategories();
-      getRecipes();
-      getLikesCount();
-      getLikes();
-    
-
-    const cachedUsers = localStorage.getItem('users');
-    if (cachedUsers) {
-      console.log('cache: ' + cachedUsers);
-      setUsers(JSON.parse(cachedUsers));
-    } else {
-      getUsers();
-    }
-
-  }, []);
-
-  const getRecipes = async () => {
+  // Function to fetch recipes with useCallback for memoization
+  const getRecipes = useCallback(async () => {
     try {
       const response = await apiClient.get(apiEndpoints.viewRecipes);
       setRecipes(response.data);
@@ -127,150 +53,196 @@ const Feed = () => {
       toast.error("Failed to load recipes");
       console.error(error);
     }
-  };
+  }, []);
 
-  const getLikes = async () => {
+  // Fetch categories
+  const getCategories = useCallback(async () => {
+    try {
+      const response = await apiClient.get(apiEndpoints.getCategories);
+      setCategories(response.data);
+    } catch (error) {
+      toast.error("Failed to load categories");
+      console.error(error);
+    }
+  }, []);
+
+  // Fetch likes
+  const getLikes = useCallback(async () => {
     try {
       const response = await apiClient.post(apiEndpoints.getLikes + userID);
       setLikes(response.data);
     } catch (error) {
-      toast.error("Failed to load likes");
+      console.log("Failed to load likes");
       console.error(error);
     }
-  };
+  }, [userID]);
 
-  const getLikesCount = async () => {
+  const getLikesCount = useCallback(async () => {
     try {
       const response = await apiClient.get(apiEndpoints.getLikesCount);
       setLikeCount(response.data);
     } catch (error) {
-      toast.error("Failed to load like count");
+      console.log("Failed to load like count");
     }
+  }, []);
+
+  // Consolidate initialization logic into useEffect
+  useEffect(() => {
+    getCategories();
+    getRecipes();
+    getLikesCount();
+    getLikes();
+
+    const cachedUsers = localStorage.getItem("users");
+    if (cachedUsers) {
+      setUsers(JSON.parse(cachedUsers));
+    } else {
+      getUsers();
+    }
+  }, [getCategories, getRecipes, getLikes, getLikesCount]);
+
+  // Fetch users
+  const getUsers = useCallback(async () => {
+    try {
+      const response = await axios.get(url + "/Users/GetUsernames");
+      setUsers(response.data);
+      localStorage.setItem("users", JSON.stringify(response.data));
+    } catch (error) {
+      console.error(error);
+    }
+  }, [url]);
+
+  // Logout handler
+  const handleLogout = useCallback(() => {
+    dispatch(clearToken());
+    dispatch(clearUserID());
+    dispatch(clearUsername());
+    dispatch(clearRole());
+    dispatch(clearProfilePicture());
+    navigate("/");
+  }, [dispatch, navigate]);
+
+  // Optimized event handlers
+  const handleLike = useCallback(
+    async (recipeID) => {
+      try {
+        await apiClient.post(apiEndpoints.like + `userID=${userID}&recipeID=${recipeID}`);
+        setLikes((prevLikes) => [...prevLikes, { recipeID, isLiked: true }]);
+      } catch (error) {
+        toast.error("Failed to like");
+        console.error(error);
+      }
+    },
+    [userID]
+  );
+
+  const handleRemoveLike = useCallback(
+    async (recipeID) => {
+      try {
+        await apiClient.post(apiEndpoints.removeLike + `userID=${userID}&recipeID=${recipeID}`);
+        setLikes((prevLikes) =>
+          prevLikes.filter((like) => like.recipeID !== recipeID || !like.isLiked)
+        );
+      } catch (error) {
+        toast.error("Failed to remove like");
+        console.error(error);
+      }
+    },
+    [userID]
+  );
+
+  // Clear form
+  const handleClear = () => {
+    setTitle("");
+    setImage("");
+    setCategoryID("");
+    setInstructions("");
+    setSteps([""]);
   };
 
-  const handleLike = async (recipeID) => {
+  const addStep = (e) => {
+    e.preventDefault();
+    setSteps((prevSteps) => [...prevSteps, ""]);
+  };
+
+  const handleStepChange = (index, value) => {
+    setSteps((prevSteps) => {
+      const newSteps = [...prevSteps];
+      newSteps[index] = value;
+      return newSteps;
+    });
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+
+    const allSteps = steps.join("\n");
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("instructions", allSteps);
+    formData.append("userID", userID);
+    formData.append("categoryID", categoryID);
+    formData.append("image", image);
+
     try {
-      await apiClient.post(apiEndpoints.like + `userID=${userID}&recipeID=${recipeID}`);
-      setLikes((prevLikes) => [...prevLikes, { recipeID, isLiked: true }]);
+      await axios.post(url + "/Recipes/Add", formData);
+      toast.success("Recipe added successfully!");
+      navigate("/");
+      handleClear();
+      handleClose();
     } catch (error) {
-      toast.error("Failed to like");
+      toast.error("Failed to add recipe.");
       console.error(error);
     }
   };
-
-  const handleRemoveLike = async (recipeID) => {
-    try {
-      await apiClient.post(apiEndpoints.removeLike + `userID=${userID}&recipeID=${recipeID}`);
-      setLikes((prevLikes) =>
-        prevLikes.filter((like) => like.recipeID !== recipeID || !like.isLiked)
-      );
-    } catch (error) {
-      toast.error("Failed to remove like");
-      console.error(error);
-    }
-  };
-
-  const handleLikedPosts = async => {
-    navigate('/LikedPosts/' + userID)
-  }
 
   const handleProfile = (id) => {
     navigate(`/Profile/${id}`)
 
-  }
+  };
+
+  const handleLikedPosts = async => {
+    navigate('/LikedPosts/' + userID)
+  };
 
   const getRecipeLikeCount = (recipeID) => {
     const countItem = likeCount.find((count) => count.recipeID === recipeID);
     return countItem ? countItem.likeCount : 0; // Return 0 if no match
   };
 
-  //dynamically add categories
-  const getCategories = async () =>
-  {
-     try {
-      const response = await apiClient.get(apiEndpoints.getCategories); // Make the API call
-      setCategories(response.data); // Update the state with the recipes
-    } catch (error) {
-      toast.error("Failed to load recipes"); // Show error toast
-      console.error(error); // For debugging
+  const handleSearch = async (e) =>{
+    if(e !== undefined)
+    {
+      e.preventDefault();
     }
+    getUsers();
+    // localStorage.setItem('users', JSON.stringify(users));
   }
-
-  const addStep = (e) => {
-    e.preventDefault();
-    setSteps([...steps, '']);
-  }
-
-  const handleStepChange = (index, value) => {
-    const newSteps = [...steps];
-    newSteps[index] = value;
-    setSteps(newSteps);
-  }
-
-  const handleClear = () => {
-    setTitle('');
-    setImage('');
-    setCategoryID('');
-    setInstructions('');
-    setSteps([]);
-
-  }
+  
+  const handleQuery = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+  
+    console.log('query: ' + value);
+    console.log('users: ' + users);
+    console.log('storage: ' + localStorage.getItem('users'));
+    
+  
+    // Filter suggestions based on input
+    try{
+      const filtered = users.filter(user =>
+        user.username.startsWith(value.toLowerCase())
+      );
+      setSuggestions(filtered);
+    }
+    catch{
+      handleSearch()
+    }
+    
+  };
 
   const handleImageChange = (event) => {
     setImage(event.target.files[0]);
-};
-
-const getUsers = () => {
-   axios.get(url + '/Users/GetUsernames')
-        .then((result) =>
-        {setUsers(result.data);
-          console.log(result.data);
-          const userData = JSON.stringify(result.data);
-          console.log('getUsers: ' + userData);
-           localStorage.setItem('users', JSON.stringify(userData));
-           console.log('Done: ' + localStorage.getItem('users'));
-        })
-        .catch((error) =>
-        {console.log(error)})
-
-  // const fetchedUsers = [
-  //   { username: 'Alice', email: 'alice@example.com' },
-  //   { username: 'Bob', email: 'bob@example.com' },
-  //   { username: 'Amanda', email: 'amanda@example.com' },
-  //   { username: 'Aaron', email: 'aaron@example.com' },
-  // ];
-  // return fetchedUsers;
-};
-
-const handleSearch = async (e) =>{
-  if(e !== undefined)
-  {
-    e.preventDefault();
-  }
-  getUsers();
-  // localStorage.setItem('users', JSON.stringify(users));
-}
-
-const handleQuery = (e) => {
-  const value = e.target.value;
-  setQuery(value);
-
-  console.log('query: ' + value);
-  console.log('users: ' + users);
-  console.log('storage: ' + localStorage.getItem('users'));
-  
-
-  // Filter suggestions based on input
-  try{
-    const filtered = users.filter(user =>
-      user.username.startsWith(value.toLowerCase())
-    );
-    setSuggestions(filtered);
-  }
-  catch{
-    handleSearch()
-  }
-  
 };
 
   return (
@@ -376,7 +348,7 @@ const handleQuery = (e) => {
                         )}
 
                         {/* <Button className="btn btn-primary mx-1" onClick={() => console.log("Comment button clicked")} > */}
-                          <a href={handleClear}> <img className="mx-2" src={CommentButton} alt="comment button" /> 1 </a>
+                          <a href={handleClear}> <img className="mx-2" src={CommentButton} alt="comment button" /> </a>
                         {/* </Button> */}
                         </Col>
                         </Row>

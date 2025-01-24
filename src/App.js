@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, Modal, Row, Col, Container } from "react-bootstrap";
 
 function App() {
-  localStorage.setItem('apiUrl', 'https://localhost:7297/api');
+  localStorage.setItem('apiUrl', 'https://recipesystemapi.azurewebsites.net/api');
 
   return (  
         <Router>

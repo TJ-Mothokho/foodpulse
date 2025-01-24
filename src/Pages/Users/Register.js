@@ -181,6 +181,7 @@ const RegisterUser = () => {
         .catch((error) => toast.error(error))
 
         navigate('/login');
+        //works
     };
 
     return(
