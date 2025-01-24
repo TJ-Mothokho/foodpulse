@@ -13,6 +13,8 @@ const RegisterUser = () => {
     const [website, setWebsite] = useState("");
     const [bio, setBio] = useState("");
     const [profilePicture, setProfilePicture] = useState(null);
+
+    const [errorMessage, setErrorMessage] = useState("");
     
     const [showUsername, setShowUsername] = useState(false);
     const [showEmail, setShowEmail] = useState(false);
@@ -184,6 +186,34 @@ const RegisterUser = () => {
         //works
     };
 
+    //Validation
+    const handleDOB = (selectedDate) => {
+        setDateOfBirth(selectedDate);
+    
+        // Validation logic
+        if (!selectedDate) {
+          setErrorMessage("Please select your date of birth.");
+          return;
+        }
+    
+        const today = new Date();
+        const dob = new Date(selectedDate);
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        const dayDiff = today.getDate() - dob.getDate();
+    
+        // Adjust age if the birthday hasn't occurred yet this year
+        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+          age--;
+        }
+    
+        if (age < 16) {
+          setErrorMessage("You must be at least 16 years old.");
+        } else {
+          setErrorMessage(""); // Clear error if validation passes
+        }
+      };
+
     return(
         <div>
             {/* Date of Birth */}
@@ -196,13 +226,16 @@ const RegisterUser = () => {
                         <Row className="">
                             <Col>
                                 <label className="form-Label">Date of Birth: </label>
-                                <input className="form-control" type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
+                                <input className="form-control" type="date" value={dateOfBirth} onChange={(e) => handleDOB(e.target.value)} />
+                                {errorMessage && (
+                                                <div className="text-danger mt-2">{errorMessage}</div>
+                                )}
                             </Col>
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleDOB_back}>Back</Button>
-                        <Button variant="primary" onClick={handleDOB_next}>Next</Button>
+                        <Button variant="primary" onClick={handleDOB_next} disabled={errorMessage || !dateOfBirth}>Next</Button>
                     </Modal.Footer>
                 </Form>
             </Modal>
@@ -217,6 +250,7 @@ const RegisterUser = () => {
                         <Row className="">
                             <Col>
                                 <label className="form-Label">Username: </label>
+                                <span class="input-group-text" id="basic-addon1">@</span>
                                 <input className="form-control" type="text" value={username} placeholder='@...' onChange={(e) => setUsername(e.target.value)} />
                             </Col>
                         </Row>
