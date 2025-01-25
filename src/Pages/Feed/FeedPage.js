@@ -61,7 +61,6 @@ const Feed = () => {
       const response = await apiClient.get(apiEndpoints.getCategories);
       setCategories(response.data);
     } catch (error) {
-      toast.error("Failed to load categories");
       console.error(error);
     }
   }, []);

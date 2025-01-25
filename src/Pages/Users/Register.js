@@ -215,6 +215,31 @@ const RegisterUser = () => {
         }
       };
 
+      const handleUsername = (selectedUsername) => {
+        //setUsername(selectedUsername);
+        console.log("0: " + selectedUsername);
+        //console.log("1: " + username);
+
+        if(!selectedUsername){
+            setErrorMessage("Please enter username");
+            return;
+        }
+
+        // Ensure '@' prefix
+        if (!selectedUsername.startsWith('@')) {
+            selectedUsername = "@" + selectedUsername;
+        };
+
+        if(selectedUsername.includes('#') || selectedUsername.includes('$') || selectedUsername.includes('%')){
+            setErrorMessage("Invalid character(s). Use only '.' or '_'");
+            console.log("Here");
+            setUsername(selectedUsername);
+        } else {
+            setErrorMessage("");
+            setUsername(selectedUsername);
+        };
+      }
+
     return(
         <div>
             {/* Date of Birth */}
@@ -251,22 +276,16 @@ const RegisterUser = () => {
                         <Row className="">
                             <Col>
                                 <label className="form-Label">Username: </label>
-                                <input className="form-control" type="text"
-                                    value={username.startsWith('@') ? username : '@' + username} placeholder="@..." onChange={(e) => {
-                                    const inputValue = e.target.value;
-
-                                    // Ensure '@' prefix
-                                    if (inputValue.startsWith('@')) {
-                                        setUsername(inputValue);
-                                    } else {
-                                        setUsername('@' + inputValue);
-      }}} />
+                                <input className="form-control" type="text" value={username.startsWith('@') ? username : '@' + username} placeholder="@..." onChange={(e) => handleUsername(e.target.value)} />
+                                {errorMessage && (
+                                                <div className="text-danger mt-2">{errorMessage}</div>
+                                )}
                             </Col>
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleUsername_back}>Back</Button>
-                        <Button variant="primary" onClick={handleUsername_next}>Next</Button>
+                        <Button variant="primary" onClick={handleUsername_next} disabled={errorMessage || !username}>Next</Button>
                     </Modal.Footer>
                 </Form>
             </Modal>
