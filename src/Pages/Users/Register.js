@@ -256,6 +256,23 @@ const RegisterUser = () => {
         };
       }
 
+      //Email
+      const handleWebsite = (selectedWebsite) => {
+
+        if(!selectedWebsite){
+            setEmail("");
+            return;
+        };
+
+        if(!selectedWebsite.includes('.')){
+            setErrorMessage("Invalid website. Please ensure your website is correct");
+            setWebsite(selectedWebsite);
+        } else {
+            setErrorMessage("");
+            setWebsite(selectedWebsite);
+        };
+      }
+
     return(
         <div>
             {/* Date of Birth */}
@@ -361,13 +378,16 @@ const RegisterUser = () => {
                         <Row>
                             <Col>
                                 <label className="form-Label">Website Url: </label>
-                                <input className="form-control" type="text" value={website} onChange={(e) => setWebsite(e.target.value)} />
+                                <input className="form-control" type="text" value={website} onChange={(e) => handleWebsite(e.target.value)} />
+                                {errorMessage && (
+                                                <div className="text-danger mt-2">{errorMessage}</div>
+                                )}
                             </Col>
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleWebsite_back}>Back</Button>
-                        <Button variant="primary" onClick={handleWebsite_next}>Next</Button>
+                        <Button variant="primary" onClick={handleWebsite_next} disabled={errorMessage || !website}>Next</Button>
                     </Modal.Footer>
                 </Form>
             </Modal>
