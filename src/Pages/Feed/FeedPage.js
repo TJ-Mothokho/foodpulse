@@ -317,7 +317,7 @@ const Feed = () => {
               <img src={addIcon} alt="Add" /> Add Recipe
             </Button>
             </div>
-            <div>
+            <div className="main-feed-section">
               {recipes && recipes.length > 0 ? (
                 recipes.map((item, index) => {
                   const isLiked = likes.some(

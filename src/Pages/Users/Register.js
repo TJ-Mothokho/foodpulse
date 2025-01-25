@@ -166,25 +166,26 @@ const RegisterUser = () => {
         handleShowProfilePicture();
     };
 
-    //Saving Data
     const handleSave = () => {
+        const sanitizedUsername = username.startsWith('@') ? username.slice(1) : username;
+    
         const formData = new FormData();
-        formData.append("username", username);
+        formData.append("username", sanitizedUsername);
         formData.append("password", password);
         formData.append("email", email);
         formData.append("dateOfBirth", dateOfBirth);
         formData.append("website", website);
         formData.append("bio", bio);
         formData.append("profilePicture", profilePicture);
-
+    
         const url = localStorage.getItem('apiUrl');
         axios.post(url + '/Users/Add', formData)
-        .then((result) => toast.success("Account Created Successfully"))
-        .catch((error) => toast.error(error))
-
+            .then((result) => toast.success("Account Created Successfully"))
+            .catch((error) => toast.error(error));
+    
         navigate('/login');
-        //works
-    };
+        // works
+    };    
 
     //Validation
     const handleDOB = (selectedDate) => {
@@ -217,7 +218,7 @@ const RegisterUser = () => {
     return(
         <div>
             {/* Date of Birth */}
-            <Modal show={showDOB} onHide={handleClose}>
+            <Modal show={showDOB} onHide={handleClose} animation={false} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
                     <Modal.Title>How old are you?</Modal.Title>
                 </Modal.Header>
@@ -241,7 +242,7 @@ const RegisterUser = () => {
             </Modal>
 
             {/* Username */}
-            <Modal show={showUsername} onHide={handleClose}>
+            <Modal show={showUsername} onHide={handleClose} animation={false} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
                     <Modal.Title>What should we call you?</Modal.Title>
                 </Modal.Header>
@@ -250,8 +251,16 @@ const RegisterUser = () => {
                         <Row className="">
                             <Col>
                                 <label className="form-Label">Username: </label>
-                                <span class="input-group-text" id="basic-addon1">@</span>
-                                <input className="form-control" type="text" value={username} placeholder='@...' onChange={(e) => setUsername(e.target.value)} />
+                                <input className="form-control" type="text"
+                                    value={username.startsWith('@') ? username : '@' + username} placeholder="@..." onChange={(e) => {
+                                    const inputValue = e.target.value;
+
+                                    // Ensure '@' prefix
+                                    if (inputValue.startsWith('@')) {
+                                        setUsername(inputValue);
+                                    } else {
+                                        setUsername('@' + inputValue);
+      }}} />
                             </Col>
                         </Row>
                     </Modal.Body>
@@ -263,13 +272,13 @@ const RegisterUser = () => {
             </Modal>
 
             {/* Email */}
-            <Modal show={showEmail} onHide={handleClose}>
+            <Modal show={showEmail} onHide={handleClose} animation={false} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
                     <Modal.Title>What is your Email Address?</Modal.Title>
                 </Modal.Header>
                 <Form>
                     <Modal.Body>
-                        <Row className="mt-4">
+                        <Row>
                             <Col>
                                 <label className="form-Label">Email: </label>
                                 <input className="form-control" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -284,13 +293,13 @@ const RegisterUser = () => {
             </Modal>
 
             {/* Password */}
-            <Modal show={showPassword} onHide={handleClose}>
+            <Modal show={showPassword} onHide={handleClose} animation={false} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Create a strong Password.</Modal.Title>
                 </Modal.Header>
                 <Form>
                     <Modal.Body>
-                        <Row className="mt-4">
+                        <Row>
                             <Col>
                                 <label className="form-Label">Password: </label>
                                 <input className="form-control" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
@@ -305,13 +314,13 @@ const RegisterUser = () => {
             </Modal>
 
             {/* Website */}
-            <Modal show={showWebsite} onHide={handleClose}>
+            <Modal show={showWebsite} onHide={handleClose} animation={false} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Do you have a website?</Modal.Title>
                 </Modal.Header>
                 <Form>
                     <Modal.Body>
-                        <Row className="mt-4">
+                        <Row>
                             <Col>
                                 <label className="form-Label">Website Url: </label>
                                 <input className="form-control" type="text" value={website} onChange={(e) => setWebsite(e.target.value)} />
@@ -326,7 +335,7 @@ const RegisterUser = () => {
             </Modal>
 
             {/* Profile Pricture */}
-            <Modal show={showProfilePicture} onHide={handleClose}>
+            <Modal show={showProfilePicture} onHide={handleClose} animation={false} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Upload your profile Picture?</Modal.Title>
                 </Modal.Header>
@@ -347,7 +356,7 @@ const RegisterUser = () => {
             </Modal>
 
             {/* Bio */}
-            <Modal show={showBio} onHide={handleClose}>
+            <Modal show={showBio} onHide={handleClose} animation={false} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Describe yourself.</Modal.Title>
                 </Modal.Header>
@@ -356,7 +365,7 @@ const RegisterUser = () => {
                         <Row>
                             <Col>
                                 <label className="form-Label">Bio: </label>
-                                <input className="form-control" type="text" value={bio} onChange={(e) => setBio(e.target.value)} />
+                                <textarea className="form-control" type="text" value={bio} onChange={(e) => setBio(e.target.value)} />
                             </Col>
                         </Row>
                     </Modal.Body>

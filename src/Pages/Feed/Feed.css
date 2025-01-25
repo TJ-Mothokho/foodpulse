@@ -18,10 +18,27 @@
     margin-right: -50px;
 }
 
-.heading {
-    position: sticky;
-    top:0;
+/* .heading {
+    position: sticky; 
+    top: 0; 
+    z-index: 1000;
     padding-top: 10px;
+    background-color: white; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+} */
+
+.heading {
+    position: sticky; /* Pins the element to the top */
+    top: 0; /* Sticks to the very top of the viewport */
+    z-index: 1000; /* Ensures it's on top of other sections */
+    padding: 15px 20px; /* Adds consistent padding around the heading */
+    background-color: white; /* Keeps the background solid to avoid transparency issues */
+    /* border-bottom: 1px solid #ddd; */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-feed-section {
+    margin-top: 20px; /* Ensures there’s spacing between the heading and the main section */
 }
 
 .profile-icon{
