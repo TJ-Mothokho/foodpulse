@@ -273,6 +273,30 @@ const RegisterUser = () => {
         };
       }
 
+      //Password
+      const handlePassword = (selectedPassword) => {
+
+        if(!selectedPassword){
+            setErrorMessage("Please enter your Password");
+            return;
+        };
+
+        if(selectedPassword.len() < 8 ){
+            setErrorMessage("Invalid password. Password must be longer than 8 characters!");
+            return;
+        } else {
+            if(!selectedPassword.includes('#') || !selectedPassword.includes('$') || !selectedPassword.includes('%')){
+                setErrorMessage("Invalid password. Password must include atleast 1 special character!");
+                return;
+            } else if(!selectedPassword.include('0')){
+                setErrorMessage("Invalid password. Password must include atleast 1 number!");
+                return;
+            }
+            setErrorMessage("");
+            setPassword(selectedPassword);
+        };
+      }
+
     return(
         <div>
             {/* Date of Birth */}
@@ -357,13 +381,16 @@ const RegisterUser = () => {
                         <Row>
                             <Col>
                                 <label className="form-Label">Password: </label>
-                                <input className="form-control" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <input className="form-control" type="password" value={password} onChange={(e) => handlePassword(e.target.value)} />
+                                {errorMessage && (
+                                                <div className="text-danger mt-2">{errorMessage}</div>
+                                )}
                             </Col>
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handlePassword_back}>Back</Button>
-                        <Button variant="primary" onClick={handlePassword_next}>Next</Button>
+                        <Button variant="primary" onClick={handlePassword_next} disabled={errorMessage || !password}>Next</Button>
                     </Modal.Footer>
                 </Form>
             </Modal>
