@@ -188,10 +188,11 @@ const RegisterUser = () => {
     };    
 
     //Validation
+
+    //DOB
     const handleDOB = (selectedDate) => {
         setDateOfBirth(selectedDate);
     
-        // Validation logic
         if (!selectedDate) {
           setErrorMessage("Please select your date of birth.");
           return;
@@ -215,10 +216,8 @@ const RegisterUser = () => {
         }
       };
 
+      //Username
       const handleUsername = (selectedUsername) => {
-        //setUsername(selectedUsername);
-        console.log("0: " + selectedUsername);
-        //console.log("1: " + username);
 
         if(!selectedUsername){
             setErrorMessage("Please enter username");
@@ -237,6 +236,23 @@ const RegisterUser = () => {
         } else {
             setErrorMessage("");
             setUsername(selectedUsername);
+        };
+      }
+
+      //Email
+      const handleEmail = (selectedEmail) => {
+
+        if(!selectedEmail){
+            setErrorMessage("Please enter your email");
+            return;
+        }
+
+        if(selectedEmail.includes('@') && selectedEmail.includes('.')){
+            setErrorMessage("");
+            setEmail(selectedEmail);
+        } else {
+            setErrorMessage("Invalid email. Please ensure your email correct!");
+            setEmail(selectedEmail);
         };
       }
 
@@ -300,13 +316,16 @@ const RegisterUser = () => {
                         <Row>
                             <Col>
                                 <label className="form-Label">Email: </label>
-                                <input className="form-control" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                <input className="form-control" type="email" value={email} onChange={(e) => handleEmail(e.target.value)} />
+                                {errorMessage && (
+                                                <div className="text-danger mt-2">{errorMessage}</div>
+                                )}
                             </Col>
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleEmail_back}>Back</Button>
-                        <Button variant="primary" onClick={handleEmail_next}>Next</Button>
+                        <Button variant="primary" onClick={handleEmail_next} disabled={errorMessage || !email}>Next</Button>
                     </Modal.Footer>
                 </Form>
             </Modal>
