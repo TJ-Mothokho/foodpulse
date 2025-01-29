@@ -82,6 +82,18 @@ const RegisterUser = () => {
     };
 
     const handleEmail_next = () => {
+
+        // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(email)) {
+      setErrorMessage("");
+      setEmail(email);
+    } else {
+      setErrorMessage("Invalid email. Please ensure your email is correct!");
+      setEmail(email);
+      return;
+    }
+
         setShowEmail(false);
         handleShowPassword();
     };
@@ -127,6 +139,18 @@ const RegisterUser = () => {
     };
 
     const handleWebsite_next = () => {
+
+        // Basic website validation
+    const websiteRegex = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w-]*)*$/;
+    if (!websiteRegex.test(website)) {
+      setErrorMessage("Invalid website. Please ensure your website is correct");
+      setWebsite(website);
+      return;
+    } else {
+      setErrorMessage("");
+      setWebsite(website);
+    };
+
         setShowWebsite(false);
         handleShowProfilePicture();
     };
@@ -216,86 +240,87 @@ const RegisterUser = () => {
         }
       };
 
-      //Username
+      /// Username
       const handleUsername = (selectedUsername) => {
-
-        if(!selectedUsername){
-            setErrorMessage("Please enter username");
-            return;
+        if (!selectedUsername) {
+          setErrorMessage("Please enter a username");
+          return;
         }
-
+      
         // Ensure '@' prefix
-        if (!selectedUsername.startsWith('@')) {
-            selectedUsername = "@" + selectedUsername;
-        };
-
-        if(selectedUsername.includes('#') || selectedUsername.includes('$') || selectedUsername.includes('%')){
-            setErrorMessage("Invalid character(s). Use only '.' or '_'");
-            console.log("Here");
-            setUsername(selectedUsername);
-        } else {
-            setErrorMessage("");
-            setUsername(selectedUsername);
-        };
-      }
-
-      //Email
-      const handleEmail = (selectedEmail) => {
-
-        if(!selectedEmail){
-            setErrorMessage("Please enter your email");
-            return;
+        if (!selectedUsername.startsWith("@")) {
+          selectedUsername = "@" + selectedUsername;
         }
-
-        if(selectedEmail.includes('@') && selectedEmail.includes('.')){
-            setErrorMessage("");
-            setEmail(selectedEmail);
+      
+        // Regex to find invalid characters (anything other than letters, numbers, '_', and '.')
+        const invalidChars = /[^a-zA-Z0-9_.@]/;
+        if (invalidChars.test(selectedUsername)) {
+          setErrorMessage("Invalid character(s). Only letters, numbers, '_', and '.' are allowed.");
+          setUsername(selectedUsername);
         } else {
-            setErrorMessage("Invalid email. Please ensure your email correct!");
-            setEmail(selectedEmail);
-        };
-      }
-
-      //Email
-      const handleWebsite = (selectedWebsite) => {
-
-        if(!selectedWebsite){
-            setEmail("");
-            return;
-        };
-
-        if(!selectedWebsite.includes('.')){
-            setErrorMessage("Invalid website. Please ensure your website is correct");
-            setWebsite(selectedWebsite);
-        } else {
-            setErrorMessage("");
-            setWebsite(selectedWebsite);
-        };
-      }
-
-      //Password
-      const handlePassword = (selectedPassword) => {
-
-        if(!selectedPassword){
-            setErrorMessage("Please enter your Password");
-            return;
-        };
-
-        if(selectedPassword.len() < 8 ){
-            setErrorMessage("Invalid password. Password must be longer than 8 characters!");
-            return;
-        } else {
-            if(!selectedPassword.includes('#') || !selectedPassword.includes('$') || !selectedPassword.includes('%')){
-                setErrorMessage("Invalid password. Password must include atleast 1 special character!");
-                return;
-            } else if(!selectedPassword.include('0')){
-                setErrorMessage("Invalid password. Password must include atleast 1 number!");
-                return;
-            }
-            setErrorMessage("");
-            setPassword(selectedPassword);
-        };
-      }
+          setErrorMessage("");
+          setUsername(selectedUsername);
+        }
+      };
+      
+  
+  // Email
+  const handleEmail = (selectedEmail) => {
+    if (!selectedEmail) {
+      setErrorMessage("Please enter your email");
+      return;
+    };
+    
+    setEmail(selectedEmail); 
+    
+  };
+  
+  // Website
+  const handleWebsite = (selectedWebsite) => {
+    if (!selectedWebsite) {
+      setWebsite(""); // Clear website input if empty
+      return;
+    }
+  setWebsite(selectedWebsite);
+  setErrorMessage("");
+    
+  };
+  
+  // Password
+const handlePassword = (selectedPassword) => {
+    if (!selectedPassword) {
+      setErrorMessage("Please enter your password");
+      return;
+    }
+  
+    // Check length
+    if (selectedPassword.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long!");
+      setPassword(selectedPassword);
+      return;
+    }
+  
+    // Check for at least one special character
+    const specialCharRegex = /[^a-zA-Z0-9]/;
+    if (!specialCharRegex.test(selectedPassword)) {
+      setErrorMessage("Password must include at least 1 special character!");
+      setPassword(selectedPassword);
+      return;
+    }
+  
+    // Check for at least one number
+    const numberRegex = /\d/;
+    if (!numberRegex.test(selectedPassword)) {
+      setErrorMessage("Password must include at least 1 number!");
+      setPassword(selectedPassword);
+      return;
+    }
+  
+    setErrorMessage("");
+    setPassword(selectedPassword);
+  };
+  
+  
 
     return(
         <div>
@@ -366,7 +391,7 @@ const RegisterUser = () => {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleEmail_back}>Back</Button>
-                        <Button variant="primary" onClick={handleEmail_next} disabled={errorMessage || !email}>Next</Button>
+                        <Button variant="primary" onClick={handleEmail_next} disabled={!email}>Next</Button>
                     </Modal.Footer>
                 </Form>
             </Modal>
@@ -414,7 +439,7 @@ const RegisterUser = () => {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleWebsite_back}>Back</Button>
-                        <Button variant="primary" onClick={handleWebsite_next} disabled={errorMessage || !website}>Next</Button>
+                        <Button variant="primary" onClick={handleWebsite_next} disabled={errorMessage}>Next</Button>
                     </Modal.Footer>
                 </Form>
             </Modal>

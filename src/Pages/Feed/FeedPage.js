@@ -244,6 +244,11 @@ const Feed = () => {
     setImage(event.target.files[0]);
 };
 
+const handleCardClick = () => {
+  // Display an alert with additional recipe details
+  alert(`Recipe: `);
+};
+
   return (
     <div className="container mt-4">
       <Row>
@@ -325,7 +330,8 @@ const Feed = () => {
                   const likeCountForRecipe = getRecipeLikeCount(item.recipeID);
 
                   return (
-                    <Card style={{ width: "auto" }} className="mt-3" key={index}>
+                    <Card style={{ width: "auto" }} className="mt-3" key={index} onClick={handleCardClick} onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}>
                       <Card.Body>
                         <Card.Title><a href="#" onClick={(e) => {
           e.preventDefault(); // Prevent default anchor behavior
