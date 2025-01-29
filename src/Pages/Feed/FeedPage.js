@@ -249,6 +249,11 @@ const handleCardClick = () => {
   alert(`Recipe: `);
 };
 
+const [showComment, setShowComment] = useState(false);
+
+  const handleCloseComment = () => setShowComment(false);
+  const handleShowComment = () => setShowComment(true);
+
   return (
     <div className="container mt-4">
       <Row>
@@ -330,7 +335,7 @@ const handleCardClick = () => {
                   const likeCountForRecipe = getRecipeLikeCount(item.recipeID);
 
                   return (
-                    <Card style={{ width: "auto" }} className="mt-3" key={index} onClick={handleCardClick} onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+                    <Card style={{ width: "auto" }} className="mt-3" key={index} onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
                     onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}>
                       <Card.Body>
                         <Card.Title><a href="#" onClick={(e) => {
@@ -339,25 +344,34 @@ const handleCardClick = () => {
         }}
  className="text-decoration-none"><img src={item.profilePicture} alt="profilePicture" className="profile-icon"/>@{item.userName}</a></Card.Title>
                         <hr/>
+                        <div onClick={handleCardClick}>
                         <Card.Subtitle className="mb-2 text-muted">{item.title}</Card.Subtitle>
                         <img src={item.image} alt="recipeImage" style={{width:"400px"}} className="food-image" />
+                        
+                        </div>
+                      
                         <Row className="mt-3">
+                          
                           <hr/>
+                          
                           <Col>
                         {userID && (
                           isLiked ? (
-                            <Button className="btn btn-primary mx-1" onClick={() => handleRemoveLike(item.recipeID)}> <img className="mx-2" src={LikedButton} alt="liked button" /> {likeCountForRecipe} </Button>
+                            <div>
+                              <img className="mx-2" src={LikedButton} alt="liked button" onClick={() => handleRemoveLike(item.recipeID)} /> {likeCountForRecipe} |
+                              <img className="mx-2" src={CommentButton} alt="comment button" onClick={handleShowComment} />
+                            </div> 
                           ) : (
-                            <Button className="btn btn-primary mx-1" onClick={() => handleLike(item.recipeID)}> <img className="mx-2" src={LikeButton} alt="like button" /> {likeCountForRecipe} </Button>
+                            <img className="mx-2" src={LikeButton} alt="like button" onClick={() => handleLike(item.recipeID)} /> 
                           )
                         )}
 
                         {/* <Button className="btn btn-primary mx-1" onClick={() => console.log("Comment button clicked")} > */}
-                          <a href={handleClear}> <img className="mx-2" src={CommentButton} alt="comment button" /> </a>
+                         
                         {/* </Button> */}
                         </Col>
                         </Row>
-                      </Card.Body>
+                        </Card.Body>
                     </Card>
                   );
                 })
@@ -456,10 +470,12 @@ const handleCardClick = () => {
         </Col>
       </Row>
 
+    
+
 
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleCloseComment}>
             Close
           </Button>
           <Button variant="primary" onClick={handleSave}>
@@ -467,6 +483,24 @@ const handleCardClick = () => {
           </Button>
         </Modal.Footer>
         </Form>
+      </Modal>
+
+      <Modal show={showComment} onHide={handleCloseComment}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add a comment</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <label className="form-label">Comment:</label>
+          <textarea className="form-control" type='text'></textarea>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseComment}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleCloseComment}>
+            Post
+          </Button>
+        </Modal.Footer>
       </Modal>
 
     </div>
