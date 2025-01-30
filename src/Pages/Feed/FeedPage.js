@@ -320,35 +320,49 @@ const [showComment, setShowComment] = useState(false);
         </Col>
 
         <Col className="col-3">
-            <div className="search-bar">
-            <Card style={{ width: "auto" }} className="mt-3">
-              <Card.Body>
-                <Card.Title>Search</Card.Title>
-                <Form>
-                  <Row>
-                    <Col className="col-8">
-                <input className="form-control" placeholder="@..." type="text" value={query} onChange={handleQuery} />
-                </Col>
-                <Col>
-                <button className="btn btn-primary" onClick={handleSearch}>Search</button>
-                </Col>
-                </Row>
-                {query && suggestions.length > 0 && (
-        <ul>
-          {suggestions.map((user, index) => (
-            <li key={index}>
-              {user.username}
-            </li>
-          ))}
-        </ul>
-      )}
-      {query && suggestions.length === 0 && <p>No users found.</p>}
-      </Form>
-                <Card.Title className="mt-3">Trending</Card.Title>
-              </Card.Body>
-            </Card>
-            </div>
-        </Col>
+  <div className="search-bar">
+    <Card style={{ width: "auto" }} className="mt-3">
+      <Card.Body>
+        <Card.Title>Search</Card.Title>
+        <Form>
+          <Row>
+            <Col className="col-8">
+              <input
+                className="form-control"
+                placeholder="@..."
+                type="text"
+                value={query}
+                onChange={handleQuery}
+              />
+            </Col>
+            <Col>
+              <button className="btn btn-primary" onClick={handleSearch}>
+                Search
+              </button>
+            </Col>
+          </Row>
+          {query && suggestions.length > 0 && (
+            <ul className="list-unstyled mt-2">
+              {suggestions.map((user, index) => (
+                <li key={index}>
+                  <button
+                    className="btn btn-outline-primary mt-1 col-8 text-start"
+                    onClick={() => handleProfile('212dd22c-5b8c-48cc-0e1c-08dd3c0e98d1')}
+                  >
+                    {user.username}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          {query && suggestions.length === 0 && <p>No users found.</p>}
+        </Form>
+        <Card.Title className="mt-3">Trending</Card.Title>
+      </Card.Body>
+    </Card>
+  </div>
+</Col>
+
       </Row>
 
 

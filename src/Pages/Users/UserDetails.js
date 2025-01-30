@@ -8,7 +8,7 @@ import { clearProfilePicture, clearRole, clearToken, clearUserID, clearUsername 
 const UserDetails = () =>
 {
     const url = localStorage.getItem("apiUrl");
-    const userID = useSelector((state) => state.auth.userID);
+    const storeUserID = useSelector((state) => state.auth.userID);
     const username = useSelector((state) => state.auth.username);
     const profilePicture = useSelector((state) => state.auth.profilePicture);
     const dispatch = useDispatch();
@@ -25,16 +25,16 @@ const UserDetails = () =>
         }, []);
       
       const handleFollowers = async () => {
-        if(userID != null) {
-          await axios.get(url + '/Users/FollowersCount?userID=' + userID)
+        if(storeUserID != null) {
+          await axios.get(url + '/Users/FollowersCount?userID=' + storeUserID)
           .then((result) => {setFollowers(result.data)})
           .catch((error) => {console.log(error)})
         };
       }
     
       const handleFollowings = async () => {
-        if(userID != null) {
-          await axios.get(url + '/Users/FollowingsCount?userID=' + userID)
+        if(storeUserID != null) {
+          await axios.get(url + '/Users/FollowingsCount?userID=' + storeUserID)
           .then((result) => {setFollowings(result.data)})
           .catch((error) => {console.log(error)})
         };
@@ -56,18 +56,18 @@ const UserDetails = () =>
           };
         
           const handleLikedPosts = async => {
-            navigate('/LikedPosts/' + userID)
+            navigate('/LikedPosts/' + storeUserID)
           };
     return(
         <div className="side-bar">
             {
-              userID ? (
+              storeUserID ? (
                 <Card style={{ width: "auto" }} className="mt-3">
               <Card.Body>
 
                 <Card.Title><a href="#" onClick={(e) => {
           e.preventDefault(); // Prevent default anchor behavior
-          handleProfile(userID); }} className="text-decoration-none"><img src={profilePicture} alt="profile" className="profile-icon" /> @{username}</a></Card.Title>
+          handleProfile(storeUserID); }} className="text-decoration-none"><img src={profilePicture} alt="profile" className="profile-icon" /> @{username}</a></Card.Title>
                 {followers} Followers  {followings} Following
                 <div className="Sidebar-Nav">
                   <ul>

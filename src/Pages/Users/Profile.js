@@ -57,7 +57,6 @@ const Profile = () => {
           const response = await apiClient.post(apiEndpoints.getLikes + userID);
           setLikes(response.data);
         } catch (error) {
-          toast.error("Failed to load likes");
           console.error(error);
         }
       };
@@ -67,7 +66,7 @@ const Profile = () => {
           const response = await apiClient.get(apiEndpoints.getLikesCount);
           setLikeCount(response.data);
         } catch (error) {
-          toast.error("Failed to load like count");
+          console.log(error);
         }
       };
     
@@ -76,7 +75,6 @@ const Profile = () => {
           await apiClient.post(apiEndpoints.like + `userID=${userID}&recipeID=${recipeID}`);
           setLikes((prevLikes) => [...prevLikes, { recipeID, isLiked: true }]);
         } catch (error) {
-          toast.error("Failed to like");
           console.error(error);
         }
       };
@@ -88,7 +86,6 @@ const Profile = () => {
             prevLikes.filter((like) => like.recipeID !== recipeID || !like.isLiked)
           );
         } catch (error) {
-          toast.error("Failed to remove like");
           console.error(error);
         }
       };
@@ -184,10 +181,14 @@ const [follower, setFollower] = useState('');
                       )
                     }
                     {
-                      isFollowed ? (
-                        <button onClick={(e) => handleFollow()} className="btn btn-outline-danger">Unfollow</button>
-                      ) : (
-                        <button onClick={(e) => handleFollow()} className="btn btn-primary">Follow</button>
+                      storeUserID == userID ? (null) : (
+                        
+                          isFollowed ? (
+                            <button onClick={(e) => handleFollow()} className="btn btn-outline-danger">Unfollow</button>
+                          ) : (
+                            <button onClick={(e) => handleFollow()} className="btn btn-primary">Follow</button>
+                          )
+                        
                       )
                     }
                   </Card.Body>
