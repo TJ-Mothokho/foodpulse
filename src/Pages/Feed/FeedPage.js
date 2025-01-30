@@ -296,7 +296,10 @@ const [showComment, setShowComment] = useState(false);
                               <img className="mx-2" src={CommentButton} alt="comment button" onClick={handleShowComment} />
                             </div> 
                           ) : (
-                            <img className="mx-2" src={LikeButton} alt="like button" onClick={() => handleLike(item.recipeID)} /> 
+                            <div>
+                              <img className="mx-2" src={LikeButton} alt="like button" onClick={() => handleLike(item.recipeID)} /> {likeCountForRecipe} | 
+                              <img className="mx-2" src={CommentButton} alt="comment button" onClick={handleShowComment} />
+                            </div>
                           )
                         )}
 
