@@ -11,6 +11,7 @@ import { clearProfilePicture, clearRole, clearToken, clearUserID, clearUsername 
 import { useNavigate } from "react-router-dom";
 import './Feed.css';
 import axios from "axios";
+import UserDetails from "../Users/UserDetails";
 
 const Feed = () => {
   const [recipes, setRecipes] = useState([]);
@@ -91,8 +92,6 @@ const Feed = () => {
     getRecipes();
     getLikesCount();
     getLikes();
-    handleFollowers();
-    handleFollowings();
 
     const cachedUsers = localStorage.getItem("users");
     if (cachedUsers) {
@@ -113,15 +112,6 @@ const Feed = () => {
     }
   }, [url]);
 
-  // Logout handler
-  const handleLogout = useCallback(() => {
-    dispatch(clearToken());
-    dispatch(clearUserID());
-    dispatch(clearUsername());
-    dispatch(clearRole());
-    dispatch(clearProfilePicture());
-    navigate("/");
-  }, [dispatch, navigate]);
 
   // Optimized event handlers
   const handleLike = useCallback(
@@ -202,10 +192,6 @@ const Feed = () => {
 
   };
 
-  const handleLikedPosts = async => {
-    navigate('/LikedPosts/' + userID)
-  };
-
   const getRecipeLikeCount = (recipeID) => {
     const countItem = likeCount.find((count) => count.recipeID === recipeID);
     return countItem ? countItem.likeCount : 0; // Return 0 if no match
@@ -256,87 +242,13 @@ const [showComment, setShowComment] = useState(false);
   const handleCloseComment = () => setShowComment(false);
   const handleShowComment = () => setShowComment(true);
 
-  const [followers, setFollowers] = useState('');
-  const [followings, setFollowings] = useState('');
-
-  const handleFollowers = async () => {
-    if(userID != null) {
-      await axios.get(url + '/Users/FollowersCount?userID=' + userID)
-      .then((result) => {setFollowers(result.data)})
-      .catch((error) => {console.log(error)})
-    };
-  }
-
-  const handleFollowings = async () => {
-    if(userID != null) {
-      await axios.get(url + '/Users/FollowingsCount?userID=' + userID)
-      .then((result) => {setFollowings(result.data)})
-      .catch((error) => {console.log(error)})
-    };
-  }
 
 
   return (
     <div className="container mt-4">
       <Row>
         <Col className="col-3">
-          <div className="side-bar">
-            {
-              userID ? (
-                <Card style={{ width: "auto" }} className="mt-3">
-              <Card.Body>
-
-                <Card.Title><a href="#" onClick={(e) => {
-          e.preventDefault(); // Prevent default anchor behavior
-          handleProfile(userID); }} className="text-decoration-none"><img src={profilePicture} alt="profile" className="profile-icon" /> @{username}</a></Card.Title>
-                {followers} Followers  {followings} Following
-                <div className="Sidebar-Nav">
-                  <ul>
-                    {
-                      username ?
-                      (<div className="">
-                          <Row className="mt-1">
-                            <button className="btn btn-outline-secondary mx-3 block" onClick={handleProfile} > Profile </button>
-                          </Row>
-
-                          <Row className="mt-1">
-                            <button className="btn btn-outline-secondary mx-3 block" onClick={handleLikedPosts} > Liked Posts </button>
-                          </Row>
-
-                          <Row className="mt-1">
-                            <button className="btn btn-outline-danger mx-3 block" onClick={handleLogout} > Log out </button>
-                          </Row>
-                      </div>) : (null)
-                    }
-                  </ul>
-                </div>
-              </Card.Body>
-            </Card>
-              ) : (
-                <Card style={{ width: "auto" }} className="mt-3">
-              <Card.Body>
-
-                <Card.Title>Oops!</Card.Title>
-                <div className="mb-3">It seems like you're not logged in!</div>
-                Log In or Sign up to post those delicious recipes
-                <div className="Sidebar-Nav">
-                  <ul>
-                      <div className="">
-                          <Row className="mt-1">
-                            <button className="btn btn-outline-primary mx-3 block" onClick={() => navigate('/login')} > Log In </button>
-                          </Row>
-
-                          <Row className="mt-1">
-                            <button className="btn btn-primary mx-3 block" onClick={() => navigate('/register')} > Sign Up </button>
-                          </Row>
-                          </div>
-                  </ul>
-                </div>
-              </Card.Body>
-            </Card>
-              )
-            }
-          </div>
+          <UserDetails/>
         </Col>
 
         <Col className="col-6">

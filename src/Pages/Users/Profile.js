@@ -7,6 +7,7 @@ import { clearProfilePicture, clearRole, clearToken, clearUserID, clearUsername 
 import axios from "axios";
 import { Button, Card, Modal, Row, Col, Form, Container } from "react-bootstrap";
 import './User.css';
+import UserDetails from "./UserDetails";
 
 const Profile = () => {
     const storeUserID = useSelector((state) => state.auth.userID);
@@ -159,7 +160,13 @@ const [follower, setFollower] = useState('');
   }
 
     return(
-        <Container className="mt-3">
+      <div className="container mt-4">
+      <Row>
+        <Col className="col-3">
+          <UserDetails/>
+        </Col>
+
+        <Col className="col-6">
           {
             data ? (
               <div>
@@ -237,7 +244,9 @@ const [follower, setFollower] = useState('');
             : 
             (<p>loading</p>)
           }
-        </Container>
+          </Col>
+          </Row>
+        </div>
     );
 }
 
