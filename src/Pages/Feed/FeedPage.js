@@ -186,6 +186,8 @@ const Feed = () => {
       toast.error("Failed to add recipe.");
       console.error(error);
     }
+
+    window.location.reload();
   };
 
   const handleProfile = (id) => {
