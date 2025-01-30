@@ -40,7 +40,11 @@ const Profile = () => {
         await getRecipesByUserID(userID);
         await getLikesCount();
         await getLikes();
+        await getFollowDetails();
+        await handleFollowers();
+        await handleFollowings();
         console.log('effect: ' + userID);
+        console.log('store: ' + storeUserID);
 
        };
 
@@ -102,7 +106,57 @@ const Profile = () => {
       const handleProfile = (id) => {
         navigate(`/Profile/${id}`)
     
-      }
+      };
+
+      const followData = {
+        'followerID': storeUserID,
+        'userID': userID
+      };
+
+      const handleFollow = async () => {
+            console.log('here1');     
+            
+              await axios.post(url + "/Users/Follow", followData)
+              .then((result) => {toast.success("Followed!")})
+              .catch ((error) => {console.log(error)})
+            
+      };
+
+      const [followers, setFollowers] = useState([]);
+const [isFollowed, setIsFollowed] = useState(false);
+
+const getFollowDetails = async () => {
+  try {
+    const result = await axios.get(`${url}/Users/Followers?userID=${userID}`);
+    setFollowers(result.data);
+
+    // Check if storeUserID exists in the followers list
+    const followed = result.data.some(follower => follower.userID === storeUserID);
+    setIsFollowed(followed);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+//checking followers
+const [follower, setFollower] = useState('');
+  const [followings, setFollowings] = useState('');
+
+  const handleFollowers = async () => {
+    if(userID != null) {
+      await axios.get(url + '/Users/FollowersCount?userID=' + userID)
+      .then((result) => {setFollower(result.data)})
+      .catch((error) => {console.log(error)})
+    };
+  }
+
+  const handleFollowings = async () => {
+    if(userID != null) {
+      await axios.get(url + '/Users/FollowingsCount?userID=' + userID)
+      .then((result) => {setFollowings(result.data)})
+      .catch((error) => {console.log(error)})
+    };
+  }
 
     return(
         <Container className="mt-3">
@@ -115,6 +169,20 @@ const Profile = () => {
                     <Card.Subtitle className="mb-2 mt-2 text-muted">{data.bio}</Card.Subtitle>
                     <Card.Text><a href={data.website}>{data.website}</a></Card.Text>
                     <Card.Text className="member">Member since: {data.createdAt}</Card.Text>
+                    {
+                      follower == 1 ? (
+                        <Card.Text>{follower} Follower   {followings} Following</Card.Text>
+                      ) : (
+                        <Card.Text>{follower} Followers   {followings} Following</Card.Text>
+                      )
+                    }
+                    {
+                      isFollowed ? (
+                        <button onClick={(e) => handleFollow()} className="btn btn-outline-danger">Unfollow</button>
+                      ) : (
+                        <button onClick={(e) => handleFollow()} className="btn btn-primary">Follow</button>
+                      )
+                    }
                   </Card.Body>
                 </Card>
 
