@@ -91,6 +91,8 @@ const Feed = () => {
     getRecipes();
     getLikesCount();
     getLikes();
+    handleFollowers();
+    handleFollowings();
 
     const cachedUsers = localStorage.getItem("users");
     if (cachedUsers) {
@@ -254,6 +256,26 @@ const [showComment, setShowComment] = useState(false);
   const handleCloseComment = () => setShowComment(false);
   const handleShowComment = () => setShowComment(true);
 
+  const [followers, setFollowers] = useState('');
+  const [followings, setFollowings] = useState('');
+
+  const handleFollowers = async () => {
+    if(userID != null) {
+      await axios.get(url + '/Users/FollowersCount?userID=' + userID)
+      .then((result) => {setFollowers(result.data)})
+      .catch((error) => {console.log(error)})
+    };
+  }
+
+  const handleFollowings = async () => {
+    if(userID != null) {
+      await axios.get(url + '/Users/FollowingsCount?userID=' + userID)
+      .then((result) => {setFollowings(result.data)})
+      .catch((error) => {console.log(error)})
+    };
+  }
+
+
   return (
     <div className="container mt-4">
       <Row>
@@ -267,7 +289,7 @@ const [showComment, setShowComment] = useState(false);
                 <Card.Title><a href="#" onClick={(e) => {
           e.preventDefault(); // Prevent default anchor behavior
           handleProfile(userID); }} className="text-decoration-none"><img src={profilePicture} alt="profile" className="profile-icon" /> @{username}</a></Card.Title>
-                0 Following  0 Followers
+                {followers} Followers  {followings} Following
                 <div className="Sidebar-Nav">
                   <ul>
                     {
