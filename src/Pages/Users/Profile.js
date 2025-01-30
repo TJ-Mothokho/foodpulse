@@ -8,6 +8,7 @@ import axios from "axios";
 import { Button, Card, Modal, Row, Col, Form, Container } from "react-bootstrap";
 import './User.css';
 import UserDetails from "./UserDetails";
+import Search from "../Feed/Search";
 
 const Profile = () => {
     const storeUserID = useSelector((state) => state.auth.userID);
@@ -164,6 +165,9 @@ const [follower, setFollower] = useState('');
         </Col>
 
         <Col className="col-6">
+        <div className="main-section" onClick={(e) => navigate('/')}>
+            <h1>Food Pulse</h1>
+        </div>
           {
             data ? (
               <div>
@@ -245,6 +249,10 @@ const [follower, setFollower] = useState('');
             : 
             (<p>loading</p>)
           }
+          </Col>
+
+          <Col className="col-3">
+            <Search/>
           </Col>
           </Row>
         </div>
