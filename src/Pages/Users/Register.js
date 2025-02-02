@@ -2,8 +2,10 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Button, Card, Modal, Row, Col, Form } from "react-bootstrap";
-import addIcon from '../../Components/Images/plus-circle.svg'
+import backButton from '../../Components/Images/arrow-left-circle.svg';
+import nextButton from '../../Components/Images/arrow-right-circle.svg';
 import { useNavigate } from "react-router-dom";
+import './Register.css';
 
 const RegisterUser = () => {
     const [username, setUsername] = useState("");
@@ -342,8 +344,15 @@ const handlePassword = (selectedPassword) => {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleDOB_back}>Back</Button>
-                        <Button variant="primary" onClick={handleDOB_next} disabled={errorMessage || !dateOfBirth}>Next</Button>
+                        <img src={backButton} alt="back button" className="arrow-buttons" onClick={handleDOB_back}/>
+                        {
+                            errorMessage ? (null):(
+                                !dateOfBirth ? (null):(
+                                    <img src={nextButton} alt="Next button" className="arrow-buttons" onClick={handleDOB_next}/>
+                                )
+                            )
+                        }
+                        
                     </Modal.Footer>
                 </Form>
             </Modal>
@@ -366,8 +375,14 @@ const handlePassword = (selectedPassword) => {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleUsername_back}>Back</Button>
-                        <Button variant="primary" onClick={handleUsername_next} disabled={errorMessage || !username}>Next</Button>
+                    <img src={backButton} alt="back button" className="arrow-buttons" onClick={handleUsername_back}/>
+                        {
+                            errorMessage ? (null):(
+                                !username ? (null):(
+                                    <img src={nextButton} alt="Next button" className="arrow-buttons" onClick={handleUsername_next}/>
+                                )
+                            )
+                        }
                     </Modal.Footer>
                 </Form>
             </Modal>
@@ -390,8 +405,14 @@ const handlePassword = (selectedPassword) => {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleEmail_back}>Back</Button>
-                        <Button variant="primary" onClick={handleEmail_next} disabled={!email}>Next</Button>
+                    <img src={backButton} alt="back button" className="arrow-buttons" onClick={handleEmail_back}/>
+                        {
+                            errorMessage ? (null):(
+                                !email ? (null):(
+                                    <img src={nextButton} alt="Next button" className="arrow-buttons" onClick={handleEmail_next}/>
+                                )
+                            )
+                        }
                     </Modal.Footer>
                 </Form>
             </Modal>
@@ -414,8 +435,14 @@ const handlePassword = (selectedPassword) => {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handlePassword_back}>Back</Button>
-                        <Button variant="primary" onClick={handlePassword_next} disabled={errorMessage || !password}>Next</Button>
+                    <img src={backButton} alt="back button" className="arrow-buttons" onClick={handlePassword_back}/>
+                        {
+                            errorMessage ? (null):(
+                                !password ? (null):(
+                                    <img src={nextButton} alt="Next button" className="arrow-buttons" onClick={handlePassword_next}/>
+                                )
+                            )
+                        }
                     </Modal.Footer>
                 </Form>
             </Modal>
@@ -438,8 +465,14 @@ const handlePassword = (selectedPassword) => {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleWebsite_back}>Back</Button>
-                        <Button variant="primary" onClick={handleWebsite_next} disabled={errorMessage}>Next</Button>
+                    <img src={backButton} alt="back button" className="arrow-buttons" onClick={handleWebsite_back}/>
+                        {
+                            errorMessage ? (null):(
+                                !website ? (null):(
+                                    <img src={nextButton} alt="Next button" className="arrow-buttons" onClick={handleWebsite_next}/>
+                                )
+                            )
+                        }
                     </Modal.Footer>
                 </Form>
             </Modal>
@@ -459,8 +492,12 @@ const handlePassword = (selectedPassword) => {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleProfilePicture_back}>Back</Button>
-                        <Button variant="primary" onClick={handleProfilePicture_next}>Next</Button>
+                    <img src={backButton} alt="back button" className="arrow-buttons" onClick={handleProfilePicture_back}/>
+                        {
+                            errorMessage ? (null):(
+                                <img src={nextButton} alt="Next button" className="arrow-buttons" onClick={handleProfilePicture_next}/>
+                            )
+                        }
                     </Modal.Footer>
                 </Form>
             </Modal>
@@ -480,8 +517,12 @@ const handlePassword = (selectedPassword) => {
                         </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleBio_back}>Back</Button>
-                        <Button variant="primary" onClick={handleBio_next}>Next</Button>
+                        <img src={backButton} alt="back button" className="arrow-buttons" onClick={handleBio_back}/>
+                        {
+                            errorMessage ? (null):(
+                                <img src={nextButton} alt="Next button" className="arrow-buttons" onClick={handleBio_next}/>
+                            )
+                        }
                     </Modal.Footer>
                 </Form>
             </Modal>
