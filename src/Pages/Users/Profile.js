@@ -9,6 +9,9 @@ import { Button, Card, Modal, Row, Col, Form, Container } from "react-bootstrap"
 import './User.css';
 import UserDetails from "./UserDetails";
 import Search from "../Feed/Search";
+import LikeButton from "../../Components/Images/heart.svg";
+import LikedButton from "../../Components/Images/heart-fill.svg";
+import CommentButton from "../../Components/Images/chat.svg";
 
 const Profile = () => {
     const storeUserID = useSelector((state) => state.auth.userID);
@@ -155,7 +158,11 @@ const [follower, setFollower] = useState('');
       .then((result) => {setFollowings(result.data)})
       .catch((error) => {console.log(error)})
     };
-  }
+  };
+
+  const [showComment, setShowComment] = useState(false);
+  const handleCloseComment = () => setShowComment(false);
+  const handleShowComment = () => setShowComment(true);
 
     return(
       <div className="container mt-4">
@@ -222,17 +229,20 @@ const [follower, setFollower] = useState('');
                         <Row className="mt-3">
                           <hr/>
                           <Col>
-                        {userID && (
+                          {userID && (
                           isLiked ? (
-                            <Button className="btn btn-primary mx-1" onClick={() => handleRemoveLike(item.recipeID)}> <img className="mx-2" src={handleDemo} alt="liked button" /> {likeCountForRecipe} </Button>
+                            <div>
+                              <img className="mx-2" src={LikedButton} alt="liked button" onClick={() => handleRemoveLike(item.recipeID)} /> {likeCountForRecipe} |
+                              <img className="mx-2" src={CommentButton} alt="comment button" onClick={handleShowComment} />
+                            </div> 
                           ) : (
-                            <Button className="btn btn-primary mx-1" onClick={() => handleLike(item.recipeID)}> <img className="mx-2" src={handleDemo} alt="like button" /> {likeCountForRecipe} </Button>
+                            <div>
+                              <img className="mx-2" src={LikeButton} alt="like button" onClick={() => handleLike(item.recipeID)} /> {likeCountForRecipe} | 
+                              <img className="mx-2" src={CommentButton} alt="comment button" onClick={handleShowComment} />
+                            </div>
                           )
                         )}
 
-                        {/* <Button className="btn btn-primary mx-1" onClick={() => console.log("Comment button clicked")} > */}
-                          <a href={handleDemo}> <img className="mx-2" src={handleDemo} alt="comment button" /> 1 </a>
-                        {/* </Button> */}
                         </Col>
                         </Row>
                       </Card.Body>
@@ -255,6 +265,25 @@ const [follower, setFollower] = useState('');
             <Search/>
           </Col>
           </Row>
+
+          <Modal show={showComment} onHide={handleCloseComment}>
+            <Modal.Header closeButton>
+              <Modal.Title>Add a comment</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <label className="form-label">Comment:</label>
+              <textarea className="form-control" type='text'></textarea>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseComment}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={handleCloseComment}>
+                Post
+              </Button>
+            </Modal.Footer>
+          </Modal>
+
         </div>
     );
 }
