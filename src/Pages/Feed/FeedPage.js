@@ -1,50 +1,33 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { Button, Card, Modal, Row, Col, Form } from "react-bootstrap";
+import { Button, Card, Modal, Row, Col } from "react-bootstrap";
 import { toast } from "react-toastify";
-import addIcon from "../../Components/Images/plus-circle.svg";
 import LikeButton from "../../Components/Images/heart.svg";
 import LikedButton from "../../Components/Images/heart-fill.svg";
 import CommentButton from "../../Components/Images/chat.svg";
-import { useDispatch, useSelector } from "react-redux";
 import apiClient, { apiEndpoints } from "../../Api/api";
-import { clearProfilePicture, clearRole, clearToken, clearUserID, clearUsername } from "../../Store/TokenStore";
 import { useNavigate } from "react-router-dom";
 import './Feed.css';
 import axios from "axios";
 import UserDetails from "../Users/UserDetails";
 import Search from "./Search";
+import { useSelector } from "react-redux";
 
 const Feed = () => {
   const [recipes, setRecipes] = useState([]);
   const [likes, setLikes] = useState([]);
   const [likeCount, setLikeCount] = useState([]);
-  const [show, setShow] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [steps, setSteps] = useState([""]);
-  const [title, setTitle] = useState("");
-  const [instructions, setInstructions] = useState("");
-  const [categoryID, setCategoryID] = useState("");
-  const [image, setImage] = useState(null);
+  
   const [users, setUsers] = useState([]);
 
   const userID = useSelector((state) => state.auth.userID);
-  const username = useSelector((state) => state.auth.username);
-  const profilePicture = useSelector((state) => state.auth.profilePicture);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const url = localStorage.getItem("apiUrl");
 
-  const recipesRef = useRef(null); // Ref to avoid unnecessary re-renders when recipes are updated
+  // const recipesRef = useRef(null); // Ref to avoid unnecessary re-renders when recipes are updated
 
-  // Handle modal visibility
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  // Memoize computed values for performance optimization
-  const sortedRecipes = useMemo(() => recipes.slice().sort((a, b) => b.timestamp - a.timestamp), [recipes]);
+  // // Memoize computed values for performance optimization
+  // const sortedRecipes = useMemo(() => recipes.slice().sort((a, b) => b.timestamp - a.timestamp), [recipes]);
 
   // Function to fetch recipes with useCallback for memoization
   const getRecipes = useCallback(async () => {
@@ -57,15 +40,7 @@ const Feed = () => {
     }
   }, []);
 
-  // Fetch categories
-  const getCategories = useCallback(async () => {
-    try {
-      const response = await apiClient.get(apiEndpoints.getCategories);
-      setCategories(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  
 
   // Fetch likes
   const getLikes = useCallback(async () => {
@@ -89,7 +64,6 @@ const Feed = () => {
 
   // Consolidate initialization logic into useEffect
   useEffect(() => {
-    getCategories();
     getRecipes();
     getLikesCount();
     getLikes();
@@ -100,7 +74,7 @@ const Feed = () => {
     } else {
       getUsers();
     }
-  }, [getCategories, getRecipes, getLikes, getLikesCount]);
+  }, [getRecipes, getLikes, getLikesCount]);
 
   // Fetch users
   const getUsers = useCallback(async () => {
@@ -143,53 +117,6 @@ const Feed = () => {
     [userID]
   );
 
-  // Clear form
-  const handleClear = () => {
-    setTitle("");
-    setImage("");
-    setCategoryID("");
-    setInstructions("");
-    setSteps([""]);
-  };
-
-  const addStep = (e) => {
-    e.preventDefault();
-    setSteps((prevSteps) => [...prevSteps, ""]);
-  };
-
-  const handleStepChange = (index, value) => {
-    setSteps((prevSteps) => {
-      const newSteps = [...prevSteps];
-      newSteps[index] = value;
-      return newSteps;
-    });
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-
-    const allSteps = steps.join("\n");
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("instructions", allSteps);
-    formData.append("userID", userID);
-    formData.append("categoryID", categoryID);
-    formData.append("image", image);
-
-    try {
-      await axios.post(url + "/Recipes/Add", formData);
-      toast.success("Recipe added successfully!");
-      navigate("/");
-      handleClear();
-      handleClose();
-    } catch (error) {
-      toast.error("Failed to add recipe.");
-      console.error(error);
-    }
-
-    window.location.reload();
-  };
-
   const handleProfile = (id) => {
     navigate(`/Profile/${id}`);
 
@@ -208,46 +135,16 @@ const Feed = () => {
     getUsers();
     // localStorage.setItem('users', JSON.stringify(users));
   }
-  
-  const handleQuery = (e) => {
-    const value = e.target.value;
-    setQuery(value);
-  
-    console.log('query: ' + value);
-    console.log('users: ' + users);
-    console.log('storage: ' + localStorage.getItem('users'));
-    
-  
-    // Filter suggestions based on input
-    try{
-      const filtered = users.filter(user =>
-        user.username.startsWith(value.toLowerCase())
-      );
-      setSuggestions(filtered);
-    }
-    catch{
-      handleSearch()
-    }
-    
-  };
 
-  const handleImageChange = (event) => {
-    setImage(event.target.files[0]);
-};
-
-const handleCardClick = () => {
+const handleCardClick = (title, instructions) => {
   // Display an alert with additional recipe details
-  alert(`Recipe: `);
+  alert(`Title: ${title} \n Instructions: \n ${instructions}`)
 };
 
 const [showComment, setShowComment] = useState(false);
 
   const handleCloseComment = () => setShowComment(false);
   const handleShowComment = () => setShowComment(true);
-
-  const handleRedirectSearch = (user) => {
-    alert(user);
-  };
 
   return (
     <div className="container mt-4">
@@ -256,14 +153,11 @@ const [showComment, setShowComment] = useState(false);
           <UserDetails/>
         </Col>
 
+        {/* Main Feed */}
         <Col className="col-6">
           <div className="main-section">
             <div className="heading">
             <h1>Food Pulse</h1>
-            <hr/>
-            <Button variant="primary" onClick={handleShow}>
-              <img src={addIcon} alt="Add" /> Add Recipe
-            </Button>
             </div>
             <div className="main-feed-section">
               {recipes && recipes.length > 0 ? (
@@ -283,7 +177,7 @@ const [showComment, setShowComment] = useState(false);
         }}
  className="text-decoration-none"><img src={item.profilePicture} alt="profilePicture" className="profile-icon"/>@{item.userName}</a></Card.Title>
                         <hr/>
-                        <div onClick={handleCardClick}>
+                        <div onClick={(e) => handleCardClick(item.title, item.instructions)}>
                         <Card.Subtitle className="mb-2 text-muted">{item.title}</Card.Subtitle>
                         <img src={item.image} alt="recipeImage" style={{width:"400px"}} className="food-image" />
                         
@@ -327,79 +221,7 @@ const [showComment, setShowComment] = useState(false);
         <Col className="col-3">
               <Search/>
         </Col>
-
       </Row>
-
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Recipe</Modal.Title>
-        </Modal.Header>
-        <Form>
-        <Modal.Body>
-      <Row className="mt-4">
-        <Col>
-          <label className="form-Label">Title: </label>
-          <input className="form-control" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-        </Col>
-      </Row>
-
-      <Row className="mt-4">
-          <label className="form-Label">Instructions: </label>
-        <Col>
-          {steps.map((step, index) => (
-            <div key={index}>
-              <input type="text" placeholder={`Step ${index + 1}`} value={step} onChange={(e) => handleStepChange(index, e.target.value)}  className="form-control"/>
-            </div>
-          ))}
-        </Col>
-      </Row>
-
-      <Row className="mt-1">
-        <Col>
-          <button className="btn btn-outline-primary" onClick={addStep}>Next step</button>
-        </Col>
-      </Row>
-
-      <Row className="mt-4">
-        <Col className="col-7">
-          <label className="form-Label">Image: </label>
-          <input className="form-control" type="file"  onChange={handleImageChange} />
-        </Col>
-        <Col>
-          <label className="form-Label">Category: </label>
-          {/* <input className="form-control" type="text" value={formData.CategoryID} onChange={(e) => setFormData((prevFormData) => ({...prevFormData, CategoryID: e.target.value}))} /> */}
-          <select className="form-select" value={categoryID} onChange={(e) => setCategoryID(e.target.value)} >
-          <option value="">Select an option...</option>
-  {categories.map((category) => (
-    <option key={category.categoryID} value={category.categoryID}>
-      {category.name}
-    </option>
-  ))}
-            </select>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col>
-         <input className="form-control" type="text" value={userID} hidden />
-        </Col>
-      </Row>
-
-    
-
-
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseComment}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleSave}>
-          <img src={addIcon} alt="Add" /> Add Recipe
-          </Button>
-        </Modal.Footer>
-        </Form>
-      </Modal>
 
       <Modal show={showComment} onHide={handleCloseComment}>
         <Modal.Header closeButton>

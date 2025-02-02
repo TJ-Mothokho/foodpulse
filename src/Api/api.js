@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base URL for your API
-const API_BASE_URL = 'https://localhost:7297/api' //'https://recipesystemapi.azurewebsites.net/api';
+const API_BASE_URL = 'https://localhost:7297/api'; //'https://recipesystemapi.azurewebsites.net/api';
 
 // Axios instance
 const apiClient = axios.create({
