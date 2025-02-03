@@ -10,7 +10,7 @@ import Feed from './Pages/Feed/FeedPage';
 import { ToastContainer } from 'react-toastify';
 
 function App() {
-  localStorage.setItem('apiUrl', 'https://localhost:7297/api'); //'https://recipesystemapi.azurewebsites.net/api');
+  localStorage.setItem('apiUrl', 'https://recipesystemapi.azurewebsites.net/api'); //'https://localhost:7297/api'); 
 
   return (  
         <Router>
