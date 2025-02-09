@@ -68,11 +68,11 @@ const Login = () =>
                             <form>
                                 <div className="mt-3">
                                     <label className="floating-label form-label">Username:</label>
-                                    <input type="text" value={username} onChange={(e) => setUserName(e.target.value)} className="floating-input form-control" required />
+                                    <input type="text" value={username} onChange={(e) => setUserName(e.target.value)} className="floating-input form-control" autoComplete="off" autoSave="off" autoCorrect="off" required />
                                 </div>
                                 <div className="mt-3">
                                     <label className="floating-label form-label">Password:</label>
-                                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="floating-input form-control" required />
+                                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="floating-input form-control" autocomplete="new-password" autoSave="off" autoCorrect="off" required />
                                 </div>
                                 <div className="row">
                                 <div class="col-lg-6">
